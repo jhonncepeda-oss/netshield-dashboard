@@ -12,42 +12,37 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [isRegistering, setIsRegistering] = useState(false);
   const router = useRouter();
   const supabase = createClient();
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!termsAccepted) {
-      setError("Debes aceptar los términos y condiciones para continuar.");
+    if (isRegistering && !termsAccepted) {
+      setError("Debes aceptar los términos y condiciones para registrarte.");
       return;
     }
     setLoading(true);
     setError(null);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-      setError(error.message);
-      setLoading(false);
+    
+    if (isRegistering) {
+      const { error } = await supabase.auth.signUp({ email, password });
+      if (error) {
+        setError(error.message);
+        setLoading(false);
+      } else {
+        setError("Revisa tu correo para confirmar el registro.");
+        setLoading(false);
+      }
     } else {
-      router.push("/");
-      router.refresh();
-    }
-  };
-
-  const handleRegister = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!termsAccepted) {
-      setError("Debes aceptar los términos y condiciones para continuar.");
-      return;
-    }
-    setLoading(true);
-    setError(null);
-    const { error } = await supabase.auth.signUp({ email, password });
-    if (error) {
-      setError(error.message);
-      setLoading(false);
-    } else {
-      setError("Revisa tu correo para confirmar el registro (o inicia sesión si auto-confirm está activado).");
-      setLoading(false);
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) {
+        setError(error.message);
+        setLoading(false);
+      } else {
+        router.push("/");
+        router.refresh();
+      }
     }
   };
 
@@ -60,10 +55,12 @@ export default function LoginPage() {
             <Shield className="w-8 h-8 text-white" />
           </div>
           <h2 className="text-2xl font-bold text-white">NetShield Core</h2>
-          <p className="text-slate-400 text-sm mt-1">Inicia sesión para continuar</p>
+          <p className="text-slate-400 text-sm mt-1">
+            {isRegistering ? "Crea una cuenta nueva" : "Inicia sesión para continuar"}
+          </p>
         </div>
 
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={handleAuth}>
           <div>
             <label className="block text-sm font-medium text-slate-300 mb-1">Email</label>
             <input 
@@ -85,35 +82,43 @@ export default function LoginPage() {
             />
           </div>
           
-          <div className="flex items-center gap-2 mt-4">
-            <input 
-              type="checkbox" 
-              id="terms"
-              checked={termsAccepted}
-              onChange={(e) => setTermsAccepted(e.target.checked)}
-              className="w-4 h-4 rounded border-slate-700 bg-slate-800 text-cyan-500 focus:ring-cyan-500 focus:ring-offset-slate-900"
-            />
-            <label htmlFor="terms" className="text-sm text-slate-400">
-              He leído y acepto los <Link href="/terms" target="_blank" className="text-cyan-400 hover:text-cyan-300 underline">Términos y Condiciones</Link> y la <Link href="/privacy" target="_blank" className="text-cyan-400 hover:text-cyan-300 underline">Política de Privacidad</Link>
-            </label>
-          </div>
+          {isRegistering && (
+             <div className="flex items-center gap-2 mt-4">
+              <input 
+                type="checkbox" 
+                id="terms"
+                checked={termsAccepted}
+                onChange={(e) => setTermsAccepted(e.target.checked)}
+                className="w-4 h-4 rounded border-slate-700 bg-slate-800 text-cyan-500 focus:ring-cyan-500 focus:ring-offset-slate-900"
+              />
+              <label htmlFor="terms" className="text-sm text-slate-400">
+                He leído y acepto los <Link href="/terms" target="_blank" className="text-cyan-400 hover:text-cyan-300 underline">Términos y Condiciones</Link> y la <Link href="/privacy" target="_blank" className="text-cyan-400 hover:text-cyan-300 underline">Política de Privacidad</Link>
+              </label>
+            </div>
+          )}
           
           {error && <div className="text-rose-400 text-sm bg-rose-400/10 p-3 rounded-lg border border-rose-400/20">{error}</div>}
 
-          <div className="flex gap-4 pt-2">
+          <div className="pt-2">
             <button 
-              onClick={handleLogin}
+              type="submit"
               disabled={loading}
-              className="flex-1 bg-cyan-600 hover:bg-cyan-500 text-white font-medium py-3 rounded-lg transition-colors"
+              className="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-medium py-3 rounded-lg transition-colors"
             >
-              Entrar
+              {isRegistering ? "Crear Cuenta" : "Entrar"}
             </button>
-            <button 
-              onClick={handleRegister}
-              disabled={loading}
-              className="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium py-3 rounded-lg border border-slate-700 transition-colors"
+          </div>
+          
+          <div className="text-center mt-4">
+            <button
+              type="button"
+              onClick={() => {
+                setIsRegistering(!isRegistering);
+                setError(null);
+              }}
+              className="text-sm text-slate-400 hover:text-cyan-400 transition-colors"
             >
-              Registrarse
+              {isRegistering ? "¿Ya tienes cuenta? Inicia sesión" : "¿No tienes cuenta? Regístrate"}
             </button>
           </div>
           
@@ -126,10 +131,6 @@ export default function LoginPage() {
           <button 
             type="button"
             onClick={async () => {
-              if (!termsAccepted) {
-                setError("Debes aceptar los términos y condiciones para continuar.");
-                return;
-              }
               setLoading(true);
               await supabase.auth.signInWithOAuth({
                 provider: 'google',
@@ -152,6 +153,10 @@ export default function LoginPage() {
             </svg>
             Google
           </button>
+          
+          <p className="text-center text-xs text-slate-500 mt-4">
+            Al continuar con Google, aceptas los <Link href="/terms" target="_blank" className="hover:text-slate-400 underline">Términos</Link> y la <Link href="/privacy" target="_blank" className="hover:text-slate-400 underline">Privacidad</Link>.
+          </p>
         </form>
       </div>
     </div>
