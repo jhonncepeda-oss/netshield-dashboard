@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { ShieldAlert, ShieldCheck, X, ChevronDown, ChevronUp, Copy, CheckCircle2, Search, Filter, ChevronLeft, ChevronRight } from "lucide-react";
+import { ShieldAlert, ShieldCheck, X, ChevronDown, ChevronUp, Copy, CheckCircle2, Search, Filter, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 
 export default function ReportTable() {
   const [reports, setReports] = useState<any[]>([]);
@@ -29,15 +29,15 @@ export default function ReportTable() {
     try {
       let query = supabase
         .from("audit_reports")
-        .select(
+        .select(`
           report_id,
           overall_score,
           timestamp,
           devices!inner ( hostname, ip_address )
-        , { count: 'exact' });
+        `, { count: 'exact' });
 
       if (searchQuery) {
-        query = query.or(hostname.ilike.%%,ip_address.ilike.%%, { referencedTable: 'devices' });
+        query = query.or(`hostname.ilike.%${searchQuery}%,ip_address.ilike.%${searchQuery}%`, { referencedTable: 'devices' });
       }
 
       if (statusFilter === "SECURE") {
@@ -109,7 +109,7 @@ export default function ReportTable() {
     <>
       <div className="bg-slate-900/50 backdrop-blur-md rounded-2xl border border-slate-700/50 shadow-xl overflow-hidden transition-all duration-300">
         <div className="p-6 border-b border-slate-700/50 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <h3 className="text-xl font-semibold text-white">Auditor?as</h3>
+          <h3 className="text-xl font-semibold text-white">Auditorías</h3>
           
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="relative">
@@ -171,7 +171,7 @@ export default function ReportTable() {
                       </td>
                       <td className="px-6 py-4">{report.devices?.ip_address || "-"}</td>
                       <td className="px-6 py-4">
-                        <span className={ont-bold }>
+                        <span className={`font-bold ${isSecure ? "text-emerald-400" : "text-rose-400"}`}>
                           {Number(report.overall_score).toFixed(2)}%
                         </span>
                       </td>
@@ -225,9 +225,9 @@ export default function ReportTable() {
 
       {/* DRAWER COMPONENT */}
       {selectedReport && (
-        <div className="fixed inset-0 z-50 flex justify-end">
+        <div className="fixed inset-0 z-[60] flex justify-end">
           <div 
-            className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity cursor-pointer"
             onClick={() => setSelectedReport(null)}
           ></div>
           
@@ -236,7 +236,7 @@ export default function ReportTable() {
               <div>
                 <h2 className="text-2xl font-bold text-white flex items-center gap-3">
                   {selectedReport.devices?.hostname}
-                  <span className={	ext-sm px-3 py-1 rounded-full font-bold }>
+                  <span className={`text-sm px-3 py-1 rounded-full font-bold ${selectedReport.overall_score >= 80 ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}`}>
                     Score: {Number(selectedReport.overall_score).toFixed(2)}%
                   </span>
                 </h2>
@@ -253,7 +253,7 @@ export default function ReportTable() {
             </div>
 
             <div className="flex-1 overflow-y-auto p-6 space-y-4">
-              <h3 className="text-lg font-semibold text-slate-200 mb-4">Resultados de Auditor?a</h3>
+              <h3 className="text-lg font-semibold text-slate-200 mb-4">Resultados de Auditoría</h3>
               
               {loadingResults ? (
                 <div className="flex items-center justify-center py-12 text-slate-400">
@@ -270,7 +270,7 @@ export default function ReportTable() {
                   return (
                     <div 
                       key={res.result_id} 
-                      className={order rounded-lg overflow-hidden transition-all }
+                      className={`border rounded-lg overflow-hidden transition-all ${isFailed ? 'border-rose-900/50 bg-rose-950/10' : 'border-emerald-900/50 bg-emerald-950/10'}`}
                     >
                       <button 
                         onClick={() => setExpandedRule(isExpanded ? null : res.result_id)}
@@ -280,7 +280,7 @@ export default function ReportTable() {
                           {isFailed ? <ShieldAlert className="text-rose-400" size={20} /> : <ShieldCheck className="text-emerald-400" size={20} />}
                           <span className="font-medium text-slate-200">{res.rule_name}</span>
                           {isFailed && (
-                            <span className={	ext-xs px-2 py-0.5 rounded }>
+                            <span className={`text-xs px-2 py-0.5 rounded ${res.severity === 'HIGH' ? 'bg-rose-500/20 text-rose-400' : 'bg-orange-500/20 text-orange-400'}`}>
                               {res.severity}
                             </span>
                           )}
@@ -299,7 +299,7 @@ export default function ReportTable() {
                           
                           {isFailed && res.remediation && (
                             <div className="mt-4">
-                              <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Comando de Remediaci?n</h4>
+                              <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Comando de Remediación</h4>
                               <div className="relative group">
                                 <pre className="bg-black/50 border border-slate-800 rounded-lg p-4 overflow-x-auto text-sm font-mono text-cyan-400">
                                   <code>{res.remediation}</code>
@@ -329,7 +329,7 @@ export default function ReportTable() {
                <button 
                  onClick={() => {
                    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-                   window.open(${apiUrl}/export//pdf, "_blank");
+                   window.open(`${apiUrl}/export/${selectedReport.report_id}/pdf`, "_blank");
                  }}
                  className="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-medium py-3 rounded-lg transition-colors flex items-center justify-center gap-2 shadow-lg shadow-cyan-900/20"
                >
