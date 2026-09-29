@@ -108,7 +108,7 @@ export default function ReportTable() {
                     <tr 
                       key={report.report_id} 
                       onClick={() => openDrawer(report)}
-                      className="border-b border-slate-700/30 hover:bg-slate-800/60 transition-colors cursor-pointer"
+                      className="border-b border-slate-700/30 hover:bg-slate-800/60 transition-colors cursor-pointer animate-in fade-in slide-in-from-top-2 duration-500"
                     >
                       <td className="px-6 py-4 font-medium text-white">
                         {report.devices?.hostname || "Desconocido"}
