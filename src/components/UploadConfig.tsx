@@ -49,14 +49,13 @@ export default function UploadConfig() {
       
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
       
-      // Simulate IP and Hostname extraction for now
       const mockIp = "192.168." + Math.floor(Math.random() * 255) + ".1";
       const mockHostname = "Router-" + Math.floor(Math.random() * 1000);
       
-      const res = await fetch(${apiUrl}/audit/run?hostname=&ip_address=&os_version=IOS15, {
+      const res = await fetch(`${apiUrl}/audit/run?hostname=${mockHostname}&ip_address=${mockIp}&os_version=IOS15`, {
         method: "POST",
         headers: {
-          Authorization: Bearer 
+          Authorization: `Bearer ${session?.access_token || ""}`
         },
         body: formData,
       });
@@ -86,7 +85,7 @@ export default function UploadConfig() {
           <UploadCloud className="text-cyan-400" size={24} />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-white">Auditar Nueva Configuraci?n</h2>
+          <h2 className="text-xl font-bold text-white">Auditar Nueva Configuración</h2>
           <p className="text-slate-400 text-sm">Sube tu archivo .cfg de Cisco</p>
         </div>
       </div>
@@ -96,7 +95,9 @@ export default function UploadConfig() {
         onDragLeave={handleDrag}
         onDragOver={handleDrag}
         onDrop={handleDrop}
-        className={order-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 relative overflow-hidden  }
+        className={`border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 relative overflow-hidden ${
+          dragActive ? "border-cyan-400 bg-cyan-400/5" : "border-slate-700 bg-slate-800/30"
+        } ${status === "uploading" ? "opacity-50 pointer-events-none" : ""}`}
       >
         <input 
           type="file" 
@@ -124,7 +125,7 @@ export default function UploadConfig() {
         ) : (
           <label htmlFor="fileUpload" className="cursor-pointer flex flex-col items-center">
             <UploadCloud className="text-slate-500 mb-4" size={48} />
-            <p className="text-slate-300 font-medium text-lg mb-1">Arrastra tu archivo aqu?</p>
+            <p className="text-slate-300 font-medium text-lg mb-1">Arrastra tu archivo aquí</p>
             <p className="text-slate-500 text-sm mb-6">o haz clic para explorar (.cfg)</p>
             <div className="bg-slate-800 text-slate-300 px-6 py-2 rounded-lg font-medium hover:bg-slate-700 transition-colors border border-slate-700">
               Seleccionar Archivo
@@ -144,12 +145,16 @@ export default function UploadConfig() {
       {status === "success" && (
         <div className="mt-4 p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-lg flex items-center gap-3 text-emerald-400 text-sm animate-in fade-in slide-in-from-bottom-2">
           <CheckCircle2 size={18} />
-          <span>Auditor?a completada exitosamente.</span>
+          <span>Auditoría completada exitosamente.</span>
         </div>
       )}
 
       <button 
-        className={w-full mt-6 py-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all duration-300 shadow-lg }
+        className={`w-full mt-6 py-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all duration-300 shadow-lg ${
+          !file || status === "success" || status === "uploading" 
+            ? "bg-slate-800 text-slate-500 border border-slate-700 cursor-not-allowed" 
+            : "bg-cyan-600 hover:bg-cyan-500 text-white shadow-cyan-900/50 hover:shadow-cyan-500/25 border border-cyan-500"
+        }`}
         disabled={!file || status === "uploading" || status === "success"}
         onClick={handleUpload}
       >
@@ -164,7 +169,7 @@ export default function UploadConfig() {
             Reporte Generado
           </>
         ) : (
-          "Iniciar Auditor?a"
+          "Iniciar Auditoría"
         )}
       </button>
     </div>

@@ -19,7 +19,7 @@ export default function LoginPage() {
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isRegistering && !termsAccepted) {
-      setError("Debes aceptar los t?rminos y condiciones para registrarte.");
+      setError("Debes aceptar los términos y condiciones para registrarte.");
       return;
     }
     setLoading(true);
@@ -63,7 +63,7 @@ export default function LoginPage() {
             </div>
             <h2 className="text-2xl font-bold text-white">NetShield Core</h2>
             <p className="text-slate-400 text-sm mt-1">
-              {isRegistering ? "Crea una cuenta nueva" : "Inicia sesi?n para continuar"}
+              {isRegistering ? "Crea una cuenta nueva" : "Inicia sesión para continuar"}
             </p>
           </div>
 
@@ -79,13 +79,13 @@ export default function LoginPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1">Contrase?a</label>
+              <label className="block text-sm font-medium text-slate-300 mb-1">Contraseña</label>
               <input 
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
-                placeholder="????????"
+                placeholder="••••••••"
               />
             </div>
             
@@ -99,7 +99,7 @@ export default function LoginPage() {
                   className="w-4 h-4 rounded border-slate-700 bg-slate-800 text-cyan-500 focus:ring-cyan-500 focus:ring-offset-slate-900"
                 />
                 <label htmlFor="terms" className="text-sm text-slate-400">
-                  Acepto los <button type="button" onClick={() => setShowLegalModal("TERMS")} className="text-cyan-400 hover:text-cyan-300 underline">T?rminos</button> y la <button type="button" onClick={() => setShowLegalModal("PRIVACY")} className="text-cyan-400 hover:text-cyan-300 underline">Privacidad</button>
+                  Acepto los <button type="button" onClick={() => setShowLegalModal("TERMS")} className="text-cyan-400 hover:text-cyan-300 underline">Términos</button> y la <button type="button" onClick={() => setShowLegalModal("PRIVACY")} className="text-cyan-400 hover:text-cyan-300 underline">Privacidad</button>
                 </label>
               </div>
             )}
@@ -125,13 +125,13 @@ export default function LoginPage() {
                 }}
                 className="text-sm text-slate-400 hover:text-cyan-400 transition-colors"
               >
-                {isRegistering ? "?Ya tienes cuenta? Inicia sesi?n" : "?No tienes cuenta? Reg?strate"}
+                {isRegistering ? "¿Ya tienes cuenta? Inicia sesión" : "¿No tienes cuenta? Regístrate"}
               </button>
             </div>
             
             <div className="relative flex items-center py-4">
               <div className="flex-grow border-t border-slate-700"></div>
-              <span className="flex-shrink-0 mx-4 text-slate-500 text-sm">O contin?a con</span>
+              <span className="flex-shrink-0 mx-4 text-slate-500 text-sm">O continúa con</span>
               <div className="flex-grow border-t border-slate-700"></div>
             </div>
 
@@ -142,7 +142,7 @@ export default function LoginPage() {
                 await supabase.auth.signInWithOAuth({
                   provider: 'google',
                   options: {
-                    redirectTo: ${window.location.origin}/auth/callback,
+                    redirectTo: `${window.location.origin}/auth/callback`,
                     queryParams: {
                       prompt: 'select_account'
                     }
@@ -162,7 +162,7 @@ export default function LoginPage() {
             </button>
             
             <p className="text-center text-xs text-slate-500 mt-4">
-              Al continuar con Google, aceptas los <button type="button" onClick={() => setShowLegalModal("TERMS")} className="hover:text-slate-400 underline">T?rminos</button> y la <button type="button" onClick={() => setShowLegalModal("PRIVACY")} className="hover:text-slate-400 underline">Privacidad</button>.
+              Al continuar con Google, aceptas los <button type="button" onClick={() => setShowLegalModal("TERMS")} className="hover:text-slate-400 underline">Términos</button> y la <button type="button" onClick={() => setShowLegalModal("PRIVACY")} className="hover:text-slate-400 underline">Privacidad</button>.
             </p>
           </form>
         </div>
@@ -176,7 +176,7 @@ export default function LoginPage() {
             <div className="p-4 border-b border-slate-800 flex justify-between items-center bg-slate-900/50">
               <h2 className="text-xl font-bold text-white flex items-center gap-2">
                 <Shield className="text-cyan-400" size={24} />
-                {showLegalModal === "TERMS" ? "T?rminos y Condiciones" : "Pol?tica de Privacidad"}
+                {showLegalModal === "TERMS" ? "Términos y Condiciones" : "Política de Privacidad"}
               </h2>
               <button onClick={() => setShowLegalModal(null)} className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800">
                 <X size={24} />
@@ -186,42 +186,42 @@ export default function LoginPage() {
             <div className="p-6 overflow-y-auto text-sm text-slate-300 space-y-6">
               {showLegalModal === "TERMS" ? (
                 <>
-                  <p>?ltima actualizaci?n: 29 de septiembre de 2026</p>
+                  <p>Última actualización: 29 de septiembre de 2026</p>
                   <section>
                     <h3 className="text-lg font-bold text-white mb-1">1. Uso Aceptable (Anti-Abuso)</h3>
-                    <p>Queda estrictamente prohibido el uso de bots, scripts automatizados, herramientas de scraping o cualquier forma de ingenier?a inversa dirigida hacia nuestra API (Backend) para saltarse la interfaz gr?fica oficial. Cualquier intento de abuso resultar? en la suspensi?n inmediata de la cuenta.</p>
+                    <p>Queda estrictamente prohibido el uso de bots, scripts automatizados, herramientas de scraping o cualquier forma de ingeniería inversa dirigida hacia nuestra API (Backend) para saltarse la interfaz gráfica oficial. Cualquier intento de abuso resultará en la suspensión inmediata de la cuenta.</p>
                   </section>
                   <section>
-                    <h3 className="text-lg font-bold text-white mb-1">2. Cl?usula de Indemnidad</h3>
-                    <p>NetShield Core opera bajo el principio de buena fe. Al utilizar la plataforma, usted declara bajo juramento tener la autorizaci?n legal para analizar las configuraciones subidas. El usuario acepta eximir de toda responsabilidad civil o penal a NetShield Core y a sus creadores en caso de que suba archivos obtenidos il?citamente o audite redes sin autorizaci?n.</p>
+                    <h3 className="text-lg font-bold text-white mb-1">2. Cláusula de Indemnidad</h3>
+                    <p>NetShield Core opera bajo el principio de buena fe. Al utilizar la plataforma, usted declara bajo juramento tener la autorización legal para analizar las configuraciones subidas. El usuario acepta eximir de toda responsabilidad civil o penal a NetShield Core y a sus creadores en caso de que suba archivos obtenidos ilícitamente o audite redes sin autorización.</p>
                   </section>
                   <section>
                     <h3 className="text-lg font-bold text-white mb-1">3. Disponibilidad del Servicio (SLA)</h3>
-                    <p>El servicio se proporciona "Tal cual" (As-Is). Debido a nuestra arquitectura de servidores en la nube, la plataforma puede presentar tiempos de carga iniciales extendidos (cold-starts) o mantenimientos no programados. No ofrecemos garant?as de disponibilidad ininterrumpida (uptime) ni otorgamos derecho a compensaciones por interrupciones del servicio.</p>
+                    <p>El servicio se proporciona "Tal cual" (As-Is). Debido a nuestra arquitectura de servidores en la nube, la plataforma puede presentar tiempos de carga iniciales extendidos (cold-starts) o mantenimientos no programados. No ofrecemos garantías de disponibilidad ininterrumpida (uptime) ni otorgamos derecho a compensaciones por interrupciones del servicio.</p>
                   </section>
                   <section>
-                    <h3 className="text-lg font-bold text-white mb-1">4. Limitaci?n de Responsabilidad</h3>
-                    <p>Las auditor?as generadas por NetShield Core son herramientas de asistencia y no garantizan la detecci?n del 100% de las vulnerabilidades existentes. Las recomendaciones deben ser revisadas por un profesional de seguridad antes de ser aplicadas en entornos de producci?n.</p>
+                    <h3 className="text-lg font-bold text-white mb-1">4. Limitación de Responsabilidad</h3>
+                    <p>Las auditorías generadas por NetShield Core son herramientas de asistencia y no garantizan la detección del 100% de las vulnerabilidades existentes. Las recomendaciones deben ser revisadas por un profesional de seguridad antes de ser aplicadas en entornos de producción.</p>
                   </section>
                 </>
               ) : (
                 <>
-                  <p>?ltima actualizaci?n: 29 de septiembre de 2026</p>
+                  <p>Última actualización: 29 de septiembre de 2026</p>
                   <section>
-                    <h3 className="text-lg font-bold text-white mb-1">1. Enmascaramiento Autom?tico (Redaction)</h3>
-                    <p>Nuestro motor de auditor?a est? programado para ofuscar y enmascarar autom?ticamente credenciales sensibles, contrase?as en texto plano y hashes detectados en las configuraciones analizadas antes de guardar el reporte, asegurando que estos datos cr?ticos no queden expuestos en los informes.</p>
+                    <h3 className="text-lg font-bold text-white mb-1">1. Enmascaramiento Automático (Redaction)</h3>
+                    <p>Nuestro motor de auditoría está programado para ofuscar y enmascarar automáticamente credenciales sensibles, contraseñas en texto plano y hashes detectados en las configuraciones analizadas antes de guardar el reporte, asegurando que estos datos críticos no queden expuestos en los informes.</p>
                   </section>
                   <section>
-                    <h3 className="text-lg font-bold text-white mb-1">2. Retenci?n de Datos Ef?mera</h3>
-                    <p>Por su seguridad y cumplimiento normativo, los archivos de configuraci?n en crudo que usted suba se procesan en memoria y son destruidos instant?neamente. No retenemos ni almacenamos los archivos originales en discos persistentes.</p>
+                    <h3 className="text-lg font-bold text-white mb-1">2. Retención de Datos Efímera</h3>
+                    <p>Por su seguridad y cumplimiento normativo, los archivos de configuración en crudo que usted suba se procesan en memoria y son destruidos instantáneamente. No retenemos ni almacenamos los archivos originales en discos persistentes.</p>
                   </section>
                   <section>
-                    <h3 className="text-lg font-bold text-white mb-1">3. Uso de la Informaci?n</h3>
+                    <h3 className="text-lg font-bold text-white mb-1">3. Uso de la Información</h3>
                     <p>Los reportes generados se asocian a su cuenta en la base de datos cifrada de Supabase para que solo usted tenga acceso a ellos.</p>
                   </section>
                   <section>
                     <h3 className="text-lg font-bold text-white mb-1">4. Base Legal y Derechos del Usuario</h3>
-                    <p>El procesamiento de sus datos y archivos se basa en su consentimiento expl?cito otorgado al aceptar estos t?rminos y enviar sus configuraciones. Usted tiene el derecho de acceder a su historial de auditor?as y solicitar la eliminaci?n completa de su cuenta y reportes en cualquier momento.</p>
+                    <p>El procesamiento de sus datos y archivos se basa en su consentimiento explícito otorgado al aceptar estos términos y enviar sus configuraciones. Usted tiene el derecho de acceder a su historial de auditorías y solicitar la eliminación completa de su cuenta y reportes en cualquier momento.</p>
                   </section>
                 </>
               )}
