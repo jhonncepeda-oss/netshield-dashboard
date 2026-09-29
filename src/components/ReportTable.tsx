@@ -1,13 +1,20 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { createClient } from "@/utils/supabase/client";
-import { ShieldAlert, ShieldCheck, X, ChevronDown, ChevronUp, Copy, CheckCircle2 } from "lucide-react";
+import { ShieldAlert, ShieldCheck, X, ChevronDown, ChevronUp, Copy, CheckCircle2, Search, Filter, ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function ReportTable() {
   const [reports, setReports] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [totalCount, setTotalCount] = useState(0);
   
+  // Filters & Pagination
+  const [page, setPage] = useState(0);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"ALL" | "SECURE" | "VULNERABLE">("ALL");
+  const PAGE_SIZE = 10;
+
   // Drawer states
   const [selectedReport, setSelectedReport] = useState<any>(null);
   const [results, setResults] = useState<any[]>([]);
@@ -17,42 +24,60 @@ export default function ReportTable() {
 
   const supabase = createClient();
 
-  const fetchReports = async () => {
+  const fetchReports = useCallback(async () => {
+    setLoading(true);
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from("audit_reports")
         .select(
           report_id,
           overall_score,
           timestamp,
-          devices ( hostname, ip_address )
-        )
-        .order("timestamp", { ascending: false })
-        .limit(10);
+          devices!inner ( hostname, ip_address )
+        , { count: 'exact' });
+
+      if (searchQuery) {
+        query = query.or(hostname.ilike.%%,ip_address.ilike.%%, { referencedTable: 'devices' });
+      }
+
+      if (statusFilter === "SECURE") {
+        query = query.gte("overall_score", 80);
+      } else if (statusFilter === "VULNERABLE") {
+        query = query.lt("overall_score", 80);
+      }
+
+      const from = page * PAGE_SIZE;
+      const to = from + PAGE_SIZE - 1;
+      query = query.order("timestamp", { ascending: false }).range(from, to);
         
+      const { data, count, error } = await query;
+      
       if (error) throw error;
       setReports(data || []);
+      if (count !== null) setTotalCount(count);
     } catch (error) {
       console.error("Error fetching reports", error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, searchQuery, statusFilter]);
 
   useEffect(() => {
     fetchReports();
-    
+  }, [fetchReports]);
+
+  useEffect(() => {
     const channel = supabase
       .channel('schema-db-changes')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'audit_reports' }, () => {
-        fetchReports();
+        if (page === 0) fetchReports();
       })
       .subscribe();
 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [page, fetchReports]);
 
   const openDrawer = async (report: any) => {
     setSelectedReport(report);
@@ -78,11 +103,40 @@ export default function ReportTable() {
     setTimeout(() => setCopiedRule(null), 2000);
   };
 
+  const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+
   return (
     <>
       <div className="bg-slate-900/50 backdrop-blur-md rounded-2xl border border-slate-700/50 shadow-xl overflow-hidden transition-all duration-300">
-        <div className="p-6 border-b border-slate-700/50">
-          <h3 className="text-xl font-semibold text-white">?ltimas Auditor?as</h3>
+        <div className="p-6 border-b border-slate-700/50 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <h3 className="text-xl font-semibold text-white">Auditor?as</h3>
+          
+          <div className="flex flex-col sm:flex-row gap-3">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+              <input 
+                type="text" 
+                placeholder="Buscar IP o Hostname..." 
+                value={searchQuery}
+                onChange={(e) => { setSearchQuery(e.target.value); setPage(0); }}
+                className="w-full sm:w-64 bg-slate-800 border border-slate-700 rounded-lg pl-10 pr-4 py-2 text-sm text-white focus:outline-none focus:border-cyan-500"
+              />
+            </div>
+            
+            <div className="relative">
+              <Filter className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+              <select 
+                value={statusFilter}
+                onChange={(e) => { setStatusFilter(e.target.value as any); setPage(0); }}
+                className="w-full sm:w-auto appearance-none bg-slate-800 border border-slate-700 rounded-lg pl-10 pr-10 py-2 text-sm text-white focus:outline-none focus:border-cyan-500 cursor-pointer"
+              >
+                <option value="ALL">Todos</option>
+                <option value="SECURE">Seguros</option>
+                <option value="VULNERABLE">Vulnerables</option>
+              </select>
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" size={16} />
+            </div>
+          </div>
         </div>
         
         <div className="overflow-x-auto">
@@ -98,9 +152,11 @@ export default function ReportTable() {
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={5} className="px-6 py-8 text-center">Cargando reportes...</td></tr>
+                <tr><td colSpan={5} className="px-6 py-12 text-center">
+                  <div className="flex justify-center"><Loader2 className="animate-spin text-cyan-500" size={24} /></div>
+                </td></tr>
               ) : reports.length === 0 ? (
-                <tr><td colSpan={5} className="px-6 py-8 text-center text-slate-500">No hay auditor?as registradas.</td></tr>
+                <tr><td colSpan={5} className="px-6 py-12 text-center text-slate-500">No se encontraron resultados.</td></tr>
               ) : (
                 reports.map((report) => {
                   const isSecure = report.overall_score >= 80;
@@ -140,20 +196,42 @@ export default function ReportTable() {
             </tbody>
           </table>
         </div>
+
+        {/* Pagination Footer */}
+        {totalPages > 1 && (
+          <div className="p-4 border-t border-slate-700/50 flex items-center justify-between bg-slate-800/30">
+            <span className="text-sm text-slate-400">
+              Mostrando {page * PAGE_SIZE + 1} a {Math.min((page + 1) * PAGE_SIZE, totalCount)} de {totalCount} resultados
+            </span>
+            <div className="flex items-center gap-2">
+              <button 
+                onClick={() => setPage(p => Math.max(0, p - 1))}
+                disabled={page === 0}
+                className="p-2 rounded border border-slate-700 text-slate-400 hover:text-white hover:bg-slate-700 disabled:opacity-50 disabled:pointer-events-none transition-colors"
+              >
+                <ChevronLeft size={16} />
+              </button>
+              <button 
+                onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
+                disabled={page >= totalPages - 1}
+                className="p-2 rounded border border-slate-700 text-slate-400 hover:text-white hover:bg-slate-700 disabled:opacity-50 disabled:pointer-events-none transition-colors"
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* DRAWER COMPONENT */}
       {selectedReport && (
         <div className="fixed inset-0 z-50 flex justify-end">
-          {/* Backdrop */}
           <div 
             className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
             onClick={() => setSelectedReport(null)}
           ></div>
           
-          {/* Panel */}
           <div className="relative w-full max-w-2xl bg-[#0B1120] border-l border-slate-800 h-full flex flex-col shadow-2xl animate-in slide-in-from-right duration-300">
-            {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-slate-800 bg-slate-900/50">
               <div>
                 <h2 className="text-2xl font-bold text-white flex items-center gap-3">
@@ -174,7 +252,6 @@ export default function ReportTable() {
               </button>
             </div>
 
-            {/* Content */}
             <div className="flex-1 overflow-y-auto p-6 space-y-4">
               <h3 className="text-lg font-semibold text-slate-200 mb-4">Resultados de Auditor?a</h3>
               
@@ -248,7 +325,6 @@ export default function ReportTable() {
               )}
             </div>
             
-            {/* Footer */}
             <div className="p-6 border-t border-slate-800 bg-slate-900/80">
                <button 
                  disabled
