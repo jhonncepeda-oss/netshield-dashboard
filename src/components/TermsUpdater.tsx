@@ -33,30 +33,30 @@ export default function TermsUpdater({ currentVersion }: { currentVersion: numbe
             <Shield className="text-cyan-400" size={28} />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-white">Actualizaci?n de T?rminos Legales</h2>
+            <h2 className="text-2xl font-bold text-white">Actualización de Términos Legales</h2>
             <p className="text-cyan-400 text-sm">Debes aceptar las nuevas condiciones para continuar usando NetShield Core.</p>
           </div>
         </div>
         
         <div className="p-8 overflow-y-auto text-sm text-slate-300 space-y-6 flex-1">
-          <p className="text-base text-white">Hemos actualizado nuestras pol?ticas para brindarte un mejor servicio (Versi?n 2.0). A continuaci?n un resumen de los cambios m?s importantes:</p>
+          <p className="text-base text-white">Hemos actualizado nuestras políticas para brindarte un mejor servicio (Versión 2.0). A continuación un resumen de los cambios más importantes:</p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
             <div className="bg-slate-800/50 p-4 rounded-xl border border-slate-700">
-              <h3 className="text-lg font-bold text-white mb-2">T?rminos de Servicio</h3>
+              <h3 className="text-lg font-bold text-white mb-2">Términos de Servicio</h3>
               <ul className="space-y-2 list-disc list-inside text-slate-400">
-                <li>Se proh?be el abuso de la API y bots.</li>
-                <li>Se incluye cl?usula de indemnidad legal.</li>
+                <li>Se prohíbe el abuso de la API y bots.</li>
+                <li>Se incluye cláusula de indemnidad legal.</li>
                 <li>SLA: El servicio se provee "Tal Cual".</li>
-                <li>Limitaci?n de responsabilidad por falsos positivos.</li>
+                <li>Limitación de responsabilidad por falsos positivos.</li>
               </ul>
             </div>
             
             <div className="bg-slate-800/50 p-4 rounded-xl border border-slate-700">
-              <h3 className="text-lg font-bold text-white mb-2">Pol?tica de Privacidad</h3>
+              <h3 className="text-lg font-bold text-white mb-2">Política de Privacidad</h3>
               <ul className="space-y-2 list-disc list-inside text-slate-400">
                 <li>Enmascaramiento (Redaction) de credenciales.</li>
-                <li>Retenci?n de Datos Ef?mera (Zero-Retention).</li>
+                <li>Retención de Datos Efímera (Zero-Retention).</li>
                 <li>Tus archivos NO se guardan en discos persistentes.</li>
                 <li>Transparencia sobre base legal y derechos.</li>
               </ul>
@@ -64,7 +64,7 @@ export default function TermsUpdater({ currentVersion }: { currentVersion: numbe
           </div>
           
           <p className="text-xs text-slate-500 text-center mt-6">
-            Al hacer clic en "Acepto los nuevos t?rminos", confirmas que has le?do y est?s de acuerdo con la totalidad de nuestros T?rminos de Servicio y Pol?tica de Privacidad actualizados.
+            Al hacer clic en "Acepto los nuevos términos", confirmas que has leído y estás de acuerdo con la totalidad de nuestros Términos de Servicio y Política de Privacidad actualizados.
           </p>
         </div>
         
@@ -77,7 +77,7 @@ export default function TermsUpdater({ currentVersion }: { currentVersion: numbe
             {loading ? (
               <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
             ) : (
-              "Acepto los nuevos t?rminos y condiciones"
+              "Acepto los nuevos términos y condiciones"
             )}
           </button>
         </div>
