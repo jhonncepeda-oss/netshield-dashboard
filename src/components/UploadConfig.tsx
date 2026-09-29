@@ -21,7 +21,8 @@ export default function UploadConfig() {
       const supabase = createClient();
       const { data: { session } } = await supabase.auth.getSession();
       
-      const res = await fetch("http://localhost:8000/audit/run?hostname=RouterWeb&ip_address=192.168.1.1&os_version=IOS15", {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const res = await fetch(`${apiUrl}/audit/run?hostname=RouterWeb&ip_address=192.168.1.1&os_version=IOS15`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${session?.access_token || ""}`
