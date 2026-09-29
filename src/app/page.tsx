@@ -1,8 +1,13 @@
 import UploadConfig from "@/components/UploadConfig";
 import ReportTable from "@/components/ReportTable";
-import { Shield } from "lucide-react";
+import { Shield, User } from "lucide-react";
+import { createClient } from "@/utils/supabase/server";
 
-export default function Home() {
+export default async function Home() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const userName = user?.user_metadata?.full_name || user?.email || 'Usuario';
+
   return (
     <div className="min-h-screen bg-[#0B1120] text-slate-200 selection:bg-cyan-500/30 p-4 sm:p-8 md:p-12 font-sans">
       <div className="max-w-7xl mx-auto space-y-12 relative z-10">
@@ -21,11 +26,17 @@ export default function Home() {
             </div>
           </div>
           
-          <form action="/auth/signout" method="post">
-            <button className="text-sm font-medium text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-lg transition-colors">
-              Cerrar Sesión
-            </button>
-          </form>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 px-4 py-2 bg-slate-800/50 rounded-lg border border-slate-700/50">
+              <User className="w-4 h-4 text-cyan-400" />
+              <span className="text-sm font-medium text-slate-300">{userName}</span>
+            </div>
+            <form action="/auth/signout" method="post">
+              <button className="text-sm font-medium text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-lg transition-colors">
+                Cerrar Sesión
+              </button>
+            </form>
+          </div>
         </header>
 
         {/* Main Content */}

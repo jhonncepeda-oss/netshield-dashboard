@@ -10,11 +10,16 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const router = useRouter();
   const supabase = createClient();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!termsAccepted) {
+      setError("Debes aceptar los términos y condiciones para continuar.");
+      return;
+    }
     setLoading(true);
     setError(null);
     const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -29,6 +34,10 @@ export default function LoginPage() {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!termsAccepted) {
+      setError("Debes aceptar los términos y condiciones para continuar.");
+      return;
+    }
     setLoading(true);
     setError(null);
     const { error } = await supabase.auth.signUp({ email, password });
@@ -75,6 +84,19 @@ export default function LoginPage() {
             />
           </div>
           
+          <div className="flex items-center gap-2 mt-4">
+            <input 
+              type="checkbox" 
+              id="terms"
+              checked={termsAccepted}
+              onChange={(e) => setTermsAccepted(e.target.checked)}
+              className="w-4 h-4 rounded border-slate-700 bg-slate-800 text-cyan-500 focus:ring-cyan-500 focus:ring-offset-slate-900"
+            />
+            <label htmlFor="terms" className="text-sm text-slate-400">
+              He leído y acepto los <a href="#" className="text-cyan-400 hover:text-cyan-300 underline">Términos y Condiciones</a> y la <a href="#" className="text-cyan-400 hover:text-cyan-300 underline">Política de Privacidad</a>
+            </label>
+          </div>
+          
           {error && <div className="text-rose-400 text-sm bg-rose-400/10 p-3 rounded-lg border border-rose-400/20">{error}</div>}
 
           <div className="flex gap-4 pt-2">
@@ -103,11 +125,18 @@ export default function LoginPage() {
           <button 
             type="button"
             onClick={async () => {
+              if (!termsAccepted) {
+                setError("Debes aceptar los términos y condiciones para continuar.");
+                return;
+              }
               setLoading(true);
               await supabase.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
-                  redirectTo: `${window.location.origin}/auth/callback`
+                  redirectTo: `${window.location.origin}/auth/callback`,
+                  queryParams: {
+                    prompt: 'select_account'
+                  }
                 }
               });
             }}
