@@ -27,13 +27,18 @@ export default function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-white mb-2">3. Protección de Datos</h2>
-            <p>Utilizamos infraestructura segura (Supabase y bases de datos cifradas) para proteger su información contra accesos no autorizados. No compartimos, vendemos ni alquilamos sus archivos de configuración a terceros bajo ninguna circunstancia.</p>
+            <h2 className="text-xl font-bold text-white mb-2">3. Enmascaramiento Automático (Redaction)</h2>
+            <p>Nuestro motor de auditoría está programado para ofuscar y enmascarar automáticamente credenciales sensibles, contraseñas en texto plano y hashes detectados en las configuraciones analizadas antes de guardar el reporte, asegurando que estos datos críticos no queden expuestos en los informes.</p>
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-white mb-2">4. Derechos del Usuario</h2>
-            <p>Usted tiene el derecho de acceder a su historial de auditorías, solicitar la eliminación completa de su cuenta y borrar cualquier archivo o reporte generado dentro de nuestros servidores en cualquier momento.</p>
+            <h2 className="text-xl font-bold text-white mb-2">4. Retención de Datos Efímera</h2>
+            <p>Por su seguridad y cumplimiento normativo, los archivos de configuración `.cfg` en crudo que usted suba se almacenan en buckets temporales y son eliminados automáticamente de nuestros servidores 7 días después de su procesamiento.</p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-bold text-white mb-2">5. Base Legal y Derechos del Usuario</h2>
+            <p>El procesamiento de sus datos y archivos se basa en su consentimiento explícito otorgado al aceptar estos términos y enviar sus configuraciones. Usted tiene el derecho de acceder a su historial de auditorías y solicitar la eliminación completa de su cuenta y reportes en cualquier momento.</p>
           </section>
         </div>
 

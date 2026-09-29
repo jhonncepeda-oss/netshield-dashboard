@@ -27,12 +27,22 @@ export default function TermsPage() {
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-white mb-2">3. Privacidad y Seguridad</h2>
-            <p>Los archivos de configuración subidos a la plataforma serán analizados mediante reglas automatizadas de ciberseguridad. Sus datos serán procesados con la máxima seguridad. Consulte nuestra Política de Privacidad para más detalles.</p>
+            <h2 className="text-xl font-bold text-white mb-2">3. Uso Aceptable (Anti-Abuso)</h2>
+            <p>Queda estrictamente prohibido el uso de bots, scripts automatizados, herramientas de scraping o cualquier forma de ingeniería inversa dirigida hacia nuestra API (Backend) para saltarse la interfaz gráfica oficial. Cualquier intento de abuso resultará en la suspensión inmediata de la cuenta.</p>
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-white mb-2">4. Limitación de Responsabilidad</h2>
+            <h2 className="text-xl font-bold text-white mb-2">4. Cláusula de Indemnidad</h2>
+            <p>NetShield Core opera bajo el principio de buena fe. Al utilizar la plataforma, usted declara bajo juramento tener la autorización legal para analizar las configuraciones subidas. El usuario acepta eximir de toda responsabilidad civil o penal a NetShield Core y a sus creadores en caso de que suba archivos obtenidos ilícitamente o audite redes sin autorización.</p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-bold text-white mb-2">5. Disponibilidad del Servicio (SLA)</h2>
+            <p>El servicio se proporciona "Tal cual" (As-Is). Debido a nuestra arquitectura de servidores en la nube, la plataforma puede presentar tiempos de carga iniciales extendidos (cold-starts) o mantenimientos no programados. No ofrecemos garantías de disponibilidad ininterrumpida (uptime) ni otorgamos derecho a compensaciones por interrupciones del servicio.</p>
+          </section>
+
+          <section>
+            <h2 className="text-xl font-bold text-white mb-2">6. Limitación de Responsabilidad</h2>
             <p>Las auditorías generadas por NetShield Core son herramientas de asistencia y no garantizan la detección del 100% de las vulnerabilidades existentes. Las recomendaciones deben ser revisadas por un profesional de seguridad antes de ser aplicadas en entornos de producción.</p>
           </section>
         </div>
