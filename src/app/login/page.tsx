@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import { Shield } from "lucide-react";
+import Link from "next/link";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -93,7 +94,7 @@ export default function LoginPage() {
               className="w-4 h-4 rounded border-slate-700 bg-slate-800 text-cyan-500 focus:ring-cyan-500 focus:ring-offset-slate-900"
             />
             <label htmlFor="terms" className="text-sm text-slate-400">
-              He leído y acepto los <a href="#" className="text-cyan-400 hover:text-cyan-300 underline">Términos y Condiciones</a> y la <a href="#" className="text-cyan-400 hover:text-cyan-300 underline">Política de Privacidad</a>
+              He leído y acepto los <Link href="/terms" target="_blank" className="text-cyan-400 hover:text-cyan-300 underline">Términos y Condiciones</Link> y la <Link href="/privacy" target="_blank" className="text-cyan-400 hover:text-cyan-300 underline">Política de Privacidad</Link>
             </label>
           </div>
           
