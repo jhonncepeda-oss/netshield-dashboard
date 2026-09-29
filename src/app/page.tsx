@@ -3,6 +3,8 @@ import ReportTable from "@/components/ReportTable";
 import { Shield, User } from "lucide-react";
 import { createClient } from "@/utils/supabase/server";
 
+import TermsUpdater from "@/components/TermsUpdater";
+
 export default async function Home() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -10,6 +12,7 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen bg-[#0B1120] text-slate-200 selection:bg-cyan-500/30 p-4 sm:p-8 md:p-12 font-sans">
+      <TermsUpdater currentVersion={user?.user_metadata?.terms_version || 0} />
       <div className="max-w-7xl mx-auto space-y-12 relative z-10">
         
         {/* Header */}
