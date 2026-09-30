@@ -4,7 +4,16 @@ import { useEffect, useState, useCallback } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { ShieldAlert, ShieldCheck, X, ChevronDown, ChevronUp, Copy, CheckCircle2, Search, Filter, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 
+const RULE_TITLES: Record<string, string> = {
+  "SEC-01": "Cifrado Global de Contraseñas (CWE-316)",
+  "SEC-02": "Inhabilitación del Protocolo Telnet (CWE-319)",
+  "SEC-03": "Timeout de Sesión Inactiva (CWE-613)",
+  "SEC-04": "Servidor HTTP de Gestión (CVE-2018-0171)",
+  "SEC-05": "Centralización de Logs (CWE-778)"
+};
+
 export default function ReportTable() {
+
   const [reports, setReports] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalCount, setTotalCount] = useState(0);
@@ -264,8 +273,12 @@ export default function ReportTable() {
                 <p className="text-slate-500 text-center py-8">No se encontraron detalles para este reporte.</p>
               ) : (
                 results.map((res) => {
-                  const isFailed = res.status === 'FAILED';
-                  const isExpanded = expandedRule === res.result_id;
+                  const isFailed = res.passed === false;
+                  const isExpanded = expandedRule === res.result_id || expandedRule === res.rule_id;
+                  const ruleName = res.rule_id ? `Regla de Seguridad ${res.rule_id}` : "Regla Desconocida";
+                  const statusText = res.passed ? "SEGURO" : "VULNERABLE";
+                  const severityText = isFailed ? "ALTA" : "";
+
                   
                   return (
                     <div 
@@ -278,16 +291,16 @@ export default function ReportTable() {
                       >
                         <div className="flex items-center gap-3">
                           {isFailed ? <ShieldAlert className="text-rose-400" size={20} /> : <ShieldCheck className="text-emerald-400" size={20} />}
-                          <span className="font-medium text-slate-200">{res.rule_name}</span>
+                          <span className="font-medium text-slate-200">{res.rule_name || ruleName}</span>
                           {isFailed && (
                             <span className={`text-xs px-2 py-0.5 rounded ${res.severity === 'HIGH' ? 'bg-rose-500/20 text-rose-400' : 'bg-orange-500/20 text-orange-400'}`}>
-                              {res.severity}
+                              {res.severity || severityText}
                             </span>
                           )}
                         </div>
                         <div className="flex items-center gap-3">
                           <span className={isFailed ? 'text-rose-400 text-sm font-semibold' : 'text-emerald-400 text-sm font-semibold'}>
-                            {res.status}
+                            {res.status || statusText}
                           </span>
                           {isExpanded ? <ChevronUp size={20} className="text-slate-500" /> : <ChevronDown size={20} className="text-slate-500" />}
                         </div>
