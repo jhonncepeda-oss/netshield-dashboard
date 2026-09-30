@@ -33,11 +33,11 @@ export default function LoginPage() {
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isRegistering && !termsAccepted) {
-      setError("Debes aceptar los t?rminos y condiciones para registrarte.");
+      setError("Debes aceptar los términos y condiciones para registrarte.");
       return;
     }
     if (isRegistering && strength < 5) {
-      setError("La contrase?a no cumple con todos los requisitos de seguridad.");
+      setError("La contraseña no cumple con todos los requisitos de seguridad.");
       return;
     }
     setLoading(true);
@@ -81,7 +81,7 @@ export default function LoginPage() {
             </div>
             <h2 className="text-2xl font-bold text-white">NetShield Core</h2>
             <p className="text-slate-400 text-sm mt-1">
-              {isRegistering ? "Crea una cuenta nueva" : "Inicia sesi?n para continuar"}
+              {isRegistering ? "Crea una cuenta nueva" : "Inicia sesión para continuar"}
             </p>
           </div>
 
@@ -98,14 +98,14 @@ export default function LoginPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1">Contrase?a</label>
+              <label className="block text-sm font-medium text-slate-300 mb-1">Contraseña</label>
               <div className="relative">
                 <input 
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 pr-10 text-white focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
-                  placeholder="????????"
+                  placeholder="••••••••"
                   required
                 />
                 <button
@@ -122,16 +122,16 @@ export default function LoginPage() {
               <div className="space-y-2 mt-2">
                 <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
                   <div 
-                    className={h-full transition-all duration-300 } 
-                    style={{ width: ${(strength / 5) * 100}% }}
+                    className={`h-full transition-all duration-300 ${strengthColor}`} 
+                    style={{ width: `${(strength / 5) * 100}%` }}
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-2 text-xs">
-                  <span className={validations.length ? "text-emerald-400" : "text-slate-500"}>M?nimo 8 caracteres</span>
-                  <span className={validations.upper ? "text-emerald-400" : "text-slate-500"}>Una may?scula</span>
-                  <span className={validations.lower ? "text-emerald-400" : "text-slate-500"}>Una min?scula</span>
-                  <span className={validations.number ? "text-emerald-400" : "text-slate-500"}>Un n?mero</span>
-                  <span className={validations.special ? "text-emerald-400" : "text-slate-500"}>Un car?cter especial</span>
+                  <span className={validations.length ? "text-emerald-400" : "text-slate-500"}>Mínimo 8 caracteres</span>
+                  <span className={validations.upper ? "text-emerald-400" : "text-slate-500"}>Una mayúscula</span>
+                  <span className={validations.lower ? "text-emerald-400" : "text-slate-500"}>Una minúscula</span>
+                  <span className={validations.number ? "text-emerald-400" : "text-slate-500"}>Un número</span>
+                  <span className={validations.special ? "text-emerald-400" : "text-slate-500"}>Un carácter especial</span>
                 </div>
               </div>
             )}
@@ -147,7 +147,7 @@ export default function LoginPage() {
                 />
                 <label htmlFor="terms" className="text-sm text-slate-400">
                   Acepto los{' '}
-                  <button type="button" onClick={() => setShowLegalModal("TERMS")} className="text-cyan-400 hover:underline">t?rminos</button>
+                  <button type="button" onClick={() => setShowLegalModal("TERMS")} className="text-cyan-400 hover:underline">términos</button>
                   {' '}y{' '}
                   <button type="button" onClick={() => setShowLegalModal("PRIVACY")} className="text-cyan-400 hover:underline">privacidad</button>
                 </label>
@@ -165,7 +165,7 @@ export default function LoginPage() {
               disabled={loading}
               className="w-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-medium p-3 rounded-lg transition disabled:opacity-50"
             >
-              {loading ? "Cargando..." : isRegistering ? "Crear Cuenta" : "Iniciar Sesi?n"}
+              {loading ? "Cargando..." : isRegistering ? "Crear Cuenta" : "Iniciar Sesión"}
             </button>
           </form>
 
@@ -177,7 +177,7 @@ export default function LoginPage() {
               }}
               className="text-sm text-slate-400 hover:text-white transition"
             >
-              {isRegistering ? "?Ya tienes cuenta? Inicia sesi?n" : "?No tienes cuenta? Reg?strate"}
+              {isRegistering ? "¿Ya tienes cuenta? Inicia sesión" : "¿No tienes cuenta? Regístrate"}
             </button>
           </div>
         </div>
@@ -188,7 +188,7 @@ export default function LoginPage() {
           <div className="bg-slate-900 border border-slate-700 w-full max-w-2xl rounded-2xl shadow-2xl flex flex-col max-h-[85vh]">
             <div className="flex items-center justify-between p-4 border-b border-slate-800">
               <h3 className="text-lg font-bold text-white">
-                {showLegalModal === "TERMS" ? "T?rminos y Condiciones" : "Pol?tica de Privacidad"}
+                {showLegalModal === "TERMS" ? "Términos y Condiciones" : "Política de Privacidad"}
               </h3>
               <button 
                 onClick={() => setShowLegalModal(null)}

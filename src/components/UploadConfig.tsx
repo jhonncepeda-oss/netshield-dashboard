@@ -40,13 +40,13 @@ export default function UploadConfig() {
     if (!file) return;
     setStatus("uploading");
 
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("user_id", session?.user?.id || "anonymous");
-
     try {
       const supabase = createClient();
       const { data: { session } } = await supabase.auth.getSession();
+      
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("user_id", session?.user?.id || "anonymous");
       
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
       
