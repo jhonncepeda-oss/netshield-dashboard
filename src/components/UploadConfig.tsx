@@ -42,6 +42,7 @@ export default function UploadConfig() {
 
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("user_id", session?.user?.id || "anonymous");
 
     try {
       const supabase = createClient();
