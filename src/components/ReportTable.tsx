@@ -308,7 +308,7 @@ export default function ReportTable() {
                       
                       {isExpanded && (
                         <div className="px-5 pb-5 pt-2 border-t border-slate-800/50">
-                          <p className="text-sm text-slate-300 mb-4">{res.details}</p>
+                          <p className={`text-sm mb-4 ${isFailed ? "text-rose-400 font-medium" : "text-slate-300"}`}>{res.details}</p>
                           
                           {isFailed && res.remediation && (
                             <div className="mt-4">
