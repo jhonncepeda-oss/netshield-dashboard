@@ -36,6 +36,8 @@ export default function ReportTable() {
   const fetchReports = useCallback(async () => {
     setLoading(true);
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
       let query = supabase
         .from("audit_reports")
         .select(`
@@ -43,7 +45,8 @@ export default function ReportTable() {
           overall_score,
           timestamp,
           devices!inner ( hostname, ip_address )
-        `, { count: 'exact' });
+        `, { count: 'exact' })
+        .eq('user_id', session?.user?.id || 'none');
 
       if (searchQuery) {
         query = query.or(`hostname.ilike.%${searchQuery}%,ip_address.ilike.%${searchQuery}%`, { referencedTable: 'devices' });
