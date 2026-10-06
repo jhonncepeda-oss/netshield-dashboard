@@ -57,10 +57,10 @@ export default function UploadConfig() {
       
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
       
-      const res = await fetch(\/audit/run\, {
+      const res = await fetch(`${apiUrl}/audit/run`, {
         method: "POST",
         headers: {
-          Authorization: \Bearer \
+          Authorization: `Bearer ${session?.access_token || ""}`
         },
         body: formData,
       });
@@ -93,7 +93,7 @@ export default function UploadConfig() {
             <UploadCloud className="text-white w-5 h-5" strokeWidth={1.5} />
           </div>
           <div>
-            <h2 className="text-xl font-medium text-white tracking-tight">Nueva Auditor?a</h2>
+            <h2 className="text-xl font-medium text-white tracking-tight">Nueva Auditoría</h2>
             <p className="text-neutral-500 text-xs uppercase tracking-widest mt-1">Sube tu archivo .cfg de Cisco</p>
           </div>
         </div>
@@ -106,7 +106,9 @@ export default function UploadConfig() {
           onDrop={handleDrop}
           animate={{ scale: dragActive ? 1.01 : 1 }}
           transition={{ type: "spring", damping: 25, stiffness: 300 }}
-          className={\order border-dashed rounded-xl p-10 text-center transition-colors relative overflow-hidden \ \}
+          className={`border border-dashed rounded-xl p-10 text-center transition-colors relative overflow-hidden ${
+            dragActive ? "border-neutral-500 bg-[#111]" : "border-neutral-800 bg-[#050505]"
+          } ${status === "uploading" ? "opacity-50 pointer-events-none" : ""}`}
         >
           <input 
             type="file" 
@@ -149,7 +151,7 @@ export default function UploadConfig() {
                 className="cursor-pointer flex flex-col items-center"
               >
                 <UploadCloud className="text-neutral-600 mb-5 w-10 h-10" strokeWidth={1.5} />
-                <p className="text-neutral-300 font-medium text-sm mb-1">Arrastra tu archivo aqu?</p>
+                <p className="text-neutral-300 font-medium text-sm mb-1">Arrastra tu archivo aquí</p>
                 <p className="text-neutral-500 text-xs uppercase tracking-widest mb-8">o haz clic para explorar</p>
                 <div className="bg-white text-black px-6 py-2.5 rounded-md font-medium hover:bg-neutral-200 transition-colors text-sm">
                   Seleccionar Archivo
@@ -184,7 +186,7 @@ export default function UploadConfig() {
             >
               <div className="p-4 bg-[#111] border border-neutral-800 rounded-md flex items-center gap-3 text-white text-sm">
                 <CheckCircle2 size={16} />
-                <span className="font-mono">Auditor?a completada y guardada exitosamente.</span>
+                <span className="font-mono">Auditoría completada y guardada exitosamente.</span>
               </div>
             </motion.div>
           )}
@@ -193,7 +195,11 @@ export default function UploadConfig() {
 
       <div className="p-6 bg-[#050505] border-t border-neutral-800">
         <button 
-          className={\w-full py-3.5 rounded-md font-medium flex items-center justify-center gap-3 transition-colors text-sm \}
+          className={`w-full py-3.5 rounded-md font-medium flex items-center justify-center gap-3 transition-colors text-sm ${
+            !file || status === "success" || status === "uploading" 
+              ? "bg-[#111] text-neutral-600 border border-neutral-800 cursor-not-allowed" 
+              : "bg-white text-black hover:bg-neutral-200"
+          }`}
           disabled={!file || status === "uploading" || status === "success"}
           onClick={handleUpload}
         >
@@ -208,7 +214,7 @@ export default function UploadConfig() {
               <span className="uppercase tracking-widest">Generado</span>
             </>
           ) : (
-            <span className="uppercase tracking-widest">Iniciar An?lisis</span>
+            <span className="uppercase tracking-widest">Iniciar Análisis</span>
           )}
         </button>
       </div>

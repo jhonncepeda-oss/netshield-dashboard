@@ -6,11 +6,11 @@ import { ShieldAlert, ShieldCheck, X, ChevronDown, ChevronUp, Copy, CheckCircle2
 import { motion, AnimatePresence } from "framer-motion";
 
 const RULE_TITLES: Record<string, string> = {
-  "SEC-01": "Cifrado Global de Contrase?as (CWE-316)",
-  "SEC-02": "Inhabilitaci?n del Protocolo Telnet (CWE-319)",
-  "SEC-03": "Timeout de Sesi?n Inactiva (CWE-613)",
-  "SEC-04": "Servidor HTTP de Gesti?n (CVE-2018-0171)",
-  "SEC-05": "Centralizaci?n de Logs (CWE-778)"
+  "SEC-01": "Cifrado Global de Contraseñas (CWE-316)",
+  "SEC-02": "Inhabilitación del Protocolo Telnet (CWE-319)",
+  "SEC-03": "Timeout de Sesión Inactiva (CWE-613)",
+  "SEC-04": "Servidor HTTP de Gestión (CVE-2018-0171)",
+  "SEC-05": "Centralización de Logs (CWE-778)"
 };
 
 export default function ReportTable() {
@@ -40,16 +40,16 @@ export default function ReportTable() {
       
       let query = supabase
         .from("audit_reports")
-        .select(
+        .select(`
           report_id,
           overall_score,
           timestamp,
           devices!inner ( hostname, ip_address )
-        , { count: 'exact' })
+        `, { count: 'exact' })
         .eq('user_id', session?.user?.id || 'none');
 
       if (searchQuery) {
-        query = query.or(hostname.ilike.%%,ip_address.ilike.%%, { referencedTable: 'devices' });
+        query = query.or(`hostname.ilike.%${searchQuery}%,ip_address.ilike.%${searchQuery}%`, { referencedTable: 'devices' });
       }
 
       const { data, count, error } = await query
@@ -92,7 +92,7 @@ export default function ReportTable() {
       
       const mappedData = data?.map(res => ({
         ...res,
-        rule_name: RULE_TITLES[res.rule_id] || \Regla de Seguridad \,
+        rule_name: RULE_TITLES[res.rule_id] || `Regla de Seguridad ${res.rule_id}`,
         status: res.passed ? "SEGURO" : "VULNERABLE",
         severity: res.passed ? "" : "ALTA"
       })) || [];
@@ -159,16 +159,16 @@ export default function ReportTable() {
           ) : reports.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-[400px] text-neutral-500">
               <ShieldCheck className="w-12 h-12 mb-4 opacity-20" />
-              <p className="text-sm">No se encontraron auditor?as.</p>
+              <p className="text-sm">No se encontraron auditorías.</p>
             </div>
           ) : (
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-[#050505] border-b border-neutral-800 text-neutral-500 text-xs uppercase tracking-widest font-semibold">
                   <th className="px-6 py-4">Dispositivo</th>
-                  <th className="px-6 py-4">Puntuaci?n</th>
-                  <th className="px-6 py-4">Fecha de An?lisis</th>
-                  <th className="px-6 py-4 text-right">Acci?n</th>
+                  <th className="px-6 py-4">Puntuación</th>
+                  <th className="px-6 py-4">Fecha de Análisis</th>
+                  <th className="px-6 py-4 text-right">Acción</th>
                 </tr>
               </thead>
               <tbody>
@@ -189,11 +189,11 @@ export default function ReportTable() {
                         <div className="flex items-center gap-2">
                           <div className="w-24 h-1.5 bg-neutral-800 rounded-full overflow-hidden">
                             <div 
-                              className={\h-full \} 
-                              style={{ width: \%\ }}
+                              className={`h-full ${report.overall_score >= 80 ? 'bg-white' : 'bg-red-500'}`} 
+                              style={{ width: `${report.overall_score}%` }}
                             ></div>
                           </div>
-                          <span className={\	ext-xs font-mono font-medium \}>
+                          <span className={`text-xs font-mono font-medium ${report.overall_score >= 80 ? 'text-neutral-300' : 'text-red-400'}`}>
                             {Number(report.overall_score).toFixed(0)}%
                           </span>
                         </div>
@@ -221,7 +221,7 @@ export default function ReportTable() {
         {totalPages > 1 && (
           <div className="p-4 border-t border-neutral-800 flex justify-between items-center bg-[#050505]">
             <span className="text-xs text-neutral-500 uppercase tracking-widest font-medium">
-              P?g {page + 1} de {totalPages}
+              Pág {page + 1} de {totalPages}
             </span>
             <div className="flex gap-2">
               <button 
@@ -267,7 +267,7 @@ export default function ReportTable() {
                 <div>
                   <h2 className="text-xl font-medium text-white flex items-center gap-3">
                     {selectedReport.devices?.hostname}
-                    <span className={\	ext-[10px] px-2 py-0.5 rounded-sm uppercase tracking-widest font-semibold border \}>
+                    <span className={`text-[10px] px-2 py-0.5 rounded-sm uppercase tracking-widest font-semibold border ${selectedReport.overall_score >= 80 ? 'border-neutral-700 text-neutral-300' : 'border-red-900/50 text-red-400'}`}>
                       Score: {Number(selectedReport.overall_score).toFixed(2)}%
                     </span>
                   </h2>
@@ -303,7 +303,7 @@ export default function ReportTable() {
                         <motion.div 
                           layout
                           key={res.result_id} 
-                          className={\order rounded-md overflow-hidden bg-[#050505] transition-colors \}
+                          className={`border rounded-md overflow-hidden bg-[#050505] transition-colors ${isFailed ? 'border-red-900/30' : 'border-neutral-800'}`}
                         >
                           <button 
                             onClick={() => setExpandedRule(isExpanded ? null : res.result_id)}
@@ -311,7 +311,7 @@ export default function ReportTable() {
                           >
                             <div className="flex items-center gap-4">
                               {isFailed ? <ShieldAlert className="text-red-500 w-5 h-5" strokeWidth={1.5} /> : <ShieldCheck className="text-neutral-600 w-5 h-5" strokeWidth={1.5} />}
-                              <span className={\	ext-sm font-medium \}>{res.rule_name}</span>
+                              <span className={`text-sm font-medium ${isFailed ? 'text-white' : 'text-neutral-300'}`}>{res.rule_name}</span>
                               {isFailed && (
                                 <span className="text-[10px] px-2 py-0.5 border border-red-900/50 text-red-400 uppercase tracking-widest font-semibold rounded-sm">
                                   {res.severity}
@@ -319,7 +319,7 @@ export default function ReportTable() {
                               )}
                             </div>
                             <div className="flex items-center gap-3">
-                              <span className={\	ext-[10px] font-bold uppercase tracking-widest \}>
+                              <span className={`text-[10px] font-bold uppercase tracking-widest ${isFailed ? 'text-red-500' : 'text-neutral-600'}`}>
                                 {res.status}
                               </span>
                               <motion.div animate={{ rotate: isExpanded ? 180 : 0 }} transition={{ duration: 0.2 }}>
@@ -339,11 +339,11 @@ export default function ReportTable() {
                               >
                                 <div className="px-5 pb-5 pt-0">
                                   <div className="h-px w-full bg-neutral-800 mb-4"></div>
-                                  <p className={\	ext-sm leading-relaxed \}>{res.details}</p>
+                                  <p className={`text-sm leading-relaxed ${isFailed ? "text-red-200" : "text-neutral-400"}`}>{res.details}</p>
                                   
                                   {isFailed && res.remediation && (
                                     <div className="mt-5">
-                                      <h4 className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest mb-2">Comando de Remediaci?n</h4>
+                                      <h4 className="text-[10px] font-bold text-neutral-500 uppercase tracking-widest mb-2">Comando de Remediación</h4>
                                       <div className="relative group">
                                         <pre className="bg-[#000] border border-neutral-800 rounded-md p-4 overflow-x-auto text-xs font-mono text-neutral-300">
                                           <code>{res.remediation}</code>
@@ -376,7 +376,7 @@ export default function ReportTable() {
                  <button 
                    onClick={() => {
                      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-                     window.open(\/export/\/pdf\, "_blank");
+                     window.open(`${apiUrl}/export/${selectedReport.report_id}/pdf`, "_blank");
                    }}
                    className="w-full bg-white hover:bg-neutral-200 text-black font-medium text-sm py-3.5 rounded-md transition-colors flex items-center justify-center gap-2"
                  >
