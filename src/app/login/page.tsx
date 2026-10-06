@@ -167,6 +167,42 @@ export default function LoginPage() {
             >
               {loading ? "Cargando..." : isRegistering ? "Crear Cuenta" : "Iniciar Sesión"}
             </button>
+
+            <div className="flex items-center gap-4 my-4">
+              <div className="h-px bg-slate-700 flex-1"></div>
+              <span className="text-slate-500 text-sm">O continuar con</span>
+              <div className="h-px bg-slate-700 flex-1"></div>
+            </div>
+
+            <button 
+              type="button"
+              onClick={async () => {
+                setLoading(true);
+                await supabase.auth.signInWithOAuth({
+                  provider: 'google',
+                  options: {
+                    redirectTo: `${window.location.origin}/auth/callback`,
+                    queryParams: {
+                      prompt: 'select_account'
+                    }
+                  }
+                });
+              }}
+              className="w-full flex items-center justify-center gap-3 bg-white hover:bg-slate-100 text-slate-900 font-medium p-3 rounded-lg transition disabled:opacity-50"
+              disabled={loading}
+            >
+              <svg className="w-5 h-5" viewBox="0 0 24 24">
+                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
+                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+              </svg>
+              Google
+            </button>
+            
+            <p className="text-center text-xs text-slate-500 mt-4">
+              Al continuar con Google, aceptas los <button type="button" onClick={() => setShowLegalModal("TERMS")} className="hover:text-slate-400 underline">T?rminos</button> y la <button type="button" onClick={() => setShowLegalModal("PRIVACY")} className="hover:text-slate-400 underline">Privacidad</button>.
+            </p>
           </form>
 
           <div className="mt-6 text-center">
@@ -197,18 +233,46 @@ export default function LoginPage() {
                 <X size={20} />
               </button>
             </div>
-            <div className="p-6 overflow-y-auto text-sm text-slate-300 space-y-4">
+                        <div className="p-6 overflow-y-auto text-sm text-slate-300 space-y-6">
               {showLegalModal === "TERMS" ? (
                 <>
-                  <p>Al utilizar NetShield Core, usted acepta estos t&eacute;rminos de servicio...</p>
-                  <p>1. Servicio SaaS: Se provee una herramienta de auditor&iacute;a sin garant&iacute;a impl&iacute;cita.</p>
-                  <p>2. Privacidad de Datos: Solo se procesan archivos de configuraci&oacute;n subidos manualmente.</p>
+                  <p>?ltima actualizaci?n: 29 de septiembre de 2026</p>
+                  <section>
+                    <h3 className="text-lg font-bold text-white mb-1">1. Uso Aceptable (Anti-Abuso)</h3>
+                    <p>Queda estrictamente prohibido el uso de bots, scripts automatizados, herramientas de scraping o cualquier forma de ingenier?a inversa dirigida hacia nuestra API (Backend) para saltarse la interfaz gr?fica oficial. Cualquier intento de abuso resultar? en la suspensi?n inmediata de la cuenta.</p>
+                  </section>
+                  <section>
+                    <h3 className="text-lg font-bold text-white mb-1">2. Cl?usula de Indemnidad</h3>
+                    <p>NetShield Core opera bajo el principio de buena fe. Al utilizar la plataforma, usted declara bajo juramento tener la autorizaci?n legal para analizar las configuraciones subidas. El usuario acepta eximir de toda responsabilidad civil o penal a NetShield Core y a sus creadores en caso de que suba archivos obtenidos il?citamente o audite redes sin autorizaci?n.</p>
+                  </section>
+                  <section>
+                    <h3 className="text-lg font-bold text-white mb-1">3. Disponibilidad del Servicio (SLA)</h3>
+                    <p>El servicio se proporciona "Tal cual" (As-Is). Debido a nuestra arquitectura de servidores en la nube, la plataforma puede presentar tiempos de carga iniciales extendidos (cold-starts) o mantenimientos no programados. No ofrecemos garant?as de disponibilidad ininterrumpida (uptime) ni otorgamos derecho a compensaciones por interrupciones del servicio.</p>
+                  </section>
+                  <section>
+                    <h3 className="text-lg font-bold text-white mb-1">4. Limitaci?n de Responsabilidad</h3>
+                    <p>Las auditor?as generadas por NetShield Core son herramientas de asistencia y no garantizan la detecci?n del 100% de las vulnerabilidades existentes. Las recomendaciones deben ser revisadas por un profesional de seguridad antes de ser aplicadas en entornos de producci?n.</p>
+                  </section>
                 </>
               ) : (
                 <>
-                  <p>Su privacidad es importante para nosotros.</p>
-                  <p>1. Datos que recopilamos: Correos electr&oacute;nicos e IPs conectadas.</p>
-                  <p>2. Retenci&oacute;n temporal: Los archivos .cfg y .txt son eliminados en tiempo real (Zero-Retention).</p>
+                  <p>?ltima actualizaci?n: 29 de septiembre de 2026</p>
+                  <section>
+                    <h3 className="text-lg font-bold text-white mb-1">1. Enmascaramiento Autom?tico (Redaction)</h3>
+                    <p>Nuestro motor de auditor?a est? programado para ofuscar y enmascarar autom?ticamente credenciales sensibles, contrase?as en texto plano y hashes detectados en las configuraciones analizadas antes de guardar el reporte, asegurando que estos datos cr?ticos no queden expuestos en los informes.</p>
+                  </section>
+                  <section>
+                    <h3 className="text-lg font-bold text-white mb-1">2. Retenci?n de Datos Ef?mera</h3>
+                    <p>Por su seguridad y cumplimiento normativo, los archivos de configuraci?n en crudo que usted suba se procesan en memoria y son destruidos instant?neamente. No retenemos ni almacenamos los archivos originales en discos persistentes.</p>
+                  </section>
+                  <section>
+                    <h3 className="text-lg font-bold text-white mb-1">3. Uso de la Informaci?n</h3>
+                    <p>Los reportes generados se asocian a su cuenta en la base de datos cifrada de Supabase para que solo usted tenga acceso a ellos.</p>
+                  </section>
+                  <section>
+                    <h3 className="text-lg font-bold text-white mb-1">4. Base Legal y Derechos del Usuario</h3>
+                    <p>El procesamiento de sus datos y archivos se basa en su consentimiento expl?cito otorgado al aceptar estos t?rminos y enviar sus configuraciones. Usted tiene el derecho de acceder a su historial de auditor?as y solicitar la eliminaci?n completa de su cuenta y reportes en cualquier momento.</p>
+                  </section>
                 </>
               )}
             </div>
