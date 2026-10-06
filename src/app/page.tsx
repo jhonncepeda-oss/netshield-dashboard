@@ -51,7 +51,7 @@ export default async function Home() {
           
           {/* Left Column (Upload & System Status) */}
           <div className="xl:col-span-4 space-y-8">
-            <UploadConfig />
+            <UploadConfig userId={user?.id} />
             
             {/* Minimalist System Status */}
             <div className="bg-[#0a0a0a] border border-neutral-800 rounded-xl p-8">

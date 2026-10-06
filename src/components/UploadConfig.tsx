@@ -5,7 +5,7 @@ import { UploadCloud, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function UploadConfig() {
+export default function UploadConfig({ userId }: { userId?: string }) {
   const [file, setFile] = useState<File | null>(null);
   const [dragActive, setDragActive] = useState(false);
   const [status, setStatus] = useState<"idle" | "uploading" | "success" | "error">("idle");
@@ -50,7 +50,8 @@ export default function UploadConfig() {
 
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("user_id", session?.user?.id || "anonymous");
+      // Use the injected userId prop, fallback to anonymous only if absolutely necessary
+      formData.append("user_id", userId || session?.user?.id || "anonymous");
       formData.append("hostname", mockHostname);
       formData.append("ip_address", mockIp);
       formData.append("os_version", "IOS15");
