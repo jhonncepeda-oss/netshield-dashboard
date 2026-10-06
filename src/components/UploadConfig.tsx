@@ -90,15 +90,15 @@ export default function UploadConfig({ userId }: { userId?: string }) {
   };
 
   return (
-    <div className="bg-[#0a0a0a] border border-neutral-800 rounded-xl shadow-2xl overflow-hidden font-sans">
+    <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.3)] overflow-hidden font-sans">
       <div className="p-8">
         <div className="flex items-center gap-4 mb-8">
-          <div className="p-2.5 bg-[#111] border border-neutral-800 rounded-md">
+          <div className="p-2.5 bg-white/5 backdrop-blur-md border border-white/10 rounded-xl">
             <UploadCloud className="text-white w-5 h-5" strokeWidth={1.5} />
           </div>
           <div>
             <h2 className="text-xl font-medium text-white tracking-tight">Nueva Auditoría</h2>
-            <p className="text-neutral-500 text-xs uppercase tracking-widest mt-1">Sube tu archivo .cfg de Cisco</p>
+            <p className="text-neutral-400 text-xs uppercase tracking-widest mt-1">Sube tu archivo .cfg de Cisco</p>
           </div>
         </div>
 
@@ -111,7 +111,7 @@ export default function UploadConfig({ userId }: { userId?: string }) {
           animate={{ scale: dragActive ? 1.01 : 1 }}
           transition={{ type: "spring", damping: 25, stiffness: 300 }}
           className={`border border-dashed rounded-xl p-10 text-center transition-colors relative overflow-hidden ${
-            dragActive ? "border-neutral-500 bg-[#111]" : "border-neutral-800 bg-[#050505]"
+            dragActive ? "border-white/30 bg-white/10" : "border-white/10 bg-white/5 hover:bg-white/[0.07]"
           } ${status === "uploading" ? "opacity-50 pointer-events-none" : ""}`}
         >
           <input 
@@ -131,15 +131,15 @@ export default function UploadConfig({ userId }: { userId?: string }) {
                 exit={{ opacity: 0, y: -10 }}
                 className="flex flex-col items-center gap-3 w-full"
               >
-                <div className="p-3 bg-[#111] rounded-full border border-neutral-800 mb-2">
+                <div className="p-3 bg-white/10 backdrop-blur-md rounded-full border border-white/10 mb-2 shadow-[0_0_15px_rgba(255,255,255,0.05)]">
                   <CheckCircle2 className="text-white w-6 h-6" strokeWidth={1.5} />
                 </div>
                 {/* TRUNCATE FIX FOR LONG NAMES */}
-                <p className="text-neutral-300 font-mono text-sm max-w-full truncate px-4">{file.name}</p>
-                <p className="text-neutral-500 text-xs uppercase tracking-widest">{(file.size / 1024).toFixed(1)} KB</p>
+                <p className="text-neutral-200 font-mono text-sm max-w-full truncate px-4">{file.name}</p>
+                <p className="text-neutral-400 text-xs uppercase tracking-widest">{(file.size / 1024).toFixed(1)} KB</p>
                 <button 
                   onClick={() => {setFile(null); setStatus("idle");}}
-                  className="text-neutral-400 text-xs uppercase tracking-widest hover:text-white mt-4 border border-neutral-800 rounded-md px-3 py-1.5 hover:bg-[#222] transition-colors"
+                  className="text-neutral-300 text-xs uppercase tracking-widest hover:text-white mt-4 border border-white/10 rounded-lg px-4 py-2 hover:bg-white/10 transition-colors bg-white/5 backdrop-blur-md"
                   disabled={status === "uploading"}
                 >
                   Cambiar archivo
@@ -154,10 +154,10 @@ export default function UploadConfig({ userId }: { userId?: string }) {
                 htmlFor="fileUpload" 
                 className="cursor-pointer flex flex-col items-center"
               >
-                <UploadCloud className="text-neutral-600 mb-5 w-10 h-10" strokeWidth={1.5} />
-                <p className="text-neutral-300 font-medium text-sm mb-1">Arrastra tu archivo aquí</p>
+                <UploadCloud className="text-neutral-400 mb-5 w-10 h-10" strokeWidth={1.5} />
+                <p className="text-neutral-200 font-medium text-sm mb-1">Arrastra tu archivo aquí</p>
                 <p className="text-neutral-500 text-xs uppercase tracking-widest mb-8">o haz clic para explorar</p>
-                <div className="bg-white text-black px-6 py-2.5 rounded-md font-medium hover:bg-neutral-200 transition-colors text-sm">
+                <div className="bg-white/10 backdrop-blur-md border border-white/10 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-white/20 transition-colors text-sm shadow-[0_4px_12px_rgba(0,0,0,0.1)]">
                   Seleccionar Archivo
                 </div>
               </motion.label>
@@ -174,7 +174,7 @@ export default function UploadConfig({ userId }: { userId?: string }) {
               exit={{ opacity: 0, height: 0, marginTop: 0 }}
               className="overflow-hidden"
             >
-              <div className="p-4 bg-red-950/20 border border-red-900/50 rounded-md flex items-center gap-3 text-red-400 text-sm">
+              <div className="p-4 bg-red-500/10 backdrop-blur-md border border-red-500/20 rounded-xl flex items-center gap-3 text-red-400 text-sm">
                 <AlertCircle size={16} />
                 <span className="font-mono">{errorMessage}</span>
               </div>
@@ -188,7 +188,7 @@ export default function UploadConfig({ userId }: { userId?: string }) {
               exit={{ opacity: 0, height: 0, marginTop: 0 }}
               className="overflow-hidden"
             >
-              <div className="p-4 bg-[#111] border border-neutral-800 rounded-md flex items-center gap-3 text-white text-sm">
+              <div className="p-4 bg-emerald-500/10 backdrop-blur-md border border-emerald-500/20 rounded-xl flex items-center gap-3 text-emerald-400 text-sm">
                 <CheckCircle2 size={16} />
                 <span className="font-mono">Auditoría completada y guardada exitosamente.</span>
               </div>
@@ -197,12 +197,12 @@ export default function UploadConfig({ userId }: { userId?: string }) {
         </AnimatePresence>
       </div>
 
-      <div className="p-6 bg-[#050505] border-t border-neutral-800">
+      <div className="p-6 bg-black/20 border-t border-white/5 backdrop-blur-xl">
         <button 
-          className={`w-full py-3.5 rounded-md font-medium flex items-center justify-center gap-3 transition-colors text-sm ${
+          className={`w-full py-3.5 rounded-xl font-medium flex items-center justify-center gap-3 transition-all duration-300 text-sm ${
             !file || status === "success" || status === "uploading" 
-              ? "bg-[#111] text-neutral-600 border border-neutral-800 cursor-not-allowed" 
-              : "bg-white text-black hover:bg-neutral-200"
+              ? "bg-white/5 text-neutral-500 border border-white/5 cursor-not-allowed" 
+              : "bg-white text-black hover:bg-neutral-200 hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] shadow-lg"
           }`}
           disabled={!file || status === "uploading" || status === "success"}
           onClick={handleUpload}
