@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { UploadCloud, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
 import { createClient } from "@/utils/supabase/client";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function UploadConfig() {
   const [file, setFile] = useState<File | null>(null);
@@ -44,25 +45,30 @@ export default function UploadConfig() {
       const supabase = createClient();
       const { data: { session } } = await supabase.auth.getSession();
       
+      const mockIp = "192.168." + Math.floor(Math.random() * 255) + ".1";
+      const mockHostname = "Router-" + Math.floor(Math.random() * 1000);
+
       const formData = new FormData();
       formData.append("file", file);
       formData.append("user_id", session?.user?.id || "anonymous");
+      formData.append("hostname", mockHostname);
+      formData.append("ip_address", mockIp);
+      formData.append("os_version", "IOS15");
       
       const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
       
-      const mockIp = "192.168." + Math.floor(Math.random() * 255) + ".1";
-      const mockHostname = "Router-" + Math.floor(Math.random() * 1000);
-      
-      const res = await fetch(`${apiUrl}/audit/run?hostname=${mockHostname}&ip_address=${mockIp}&os_version=IOS15`, {
+      const res = await fetch(\/audit/run\, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${session?.access_token || ""}`
+          Authorization: \Bearer \
         },
         body: formData,
       });
 
       if (!res.ok) {
-        throw new Error("Error en el servidor al auditar.");
+        const errData = await res.json().catch(() => null);
+        console.error("Server Error Detail:", errData);
+        throw new Error(errData?.detail || "Error interno del servidor al procesar el archivo.");
       }
 
       setStatus("success");
@@ -75,104 +81,137 @@ export default function UploadConfig() {
       console.error(error);
       setStatus("error");
       setErrorMessage(error.message || "Error desconocido");
-      setTimeout(() => setStatus("idle"), 4000);
+      setTimeout(() => setStatus("idle"), 5000);
     }
   };
 
   return (
-    <div className="bg-slate-900/50 backdrop-blur-md p-8 rounded-2xl border border-slate-700/50 shadow-xl transition-all duration-300">
-      <div className="flex items-center gap-3 mb-6">
-        <div className="p-2 bg-cyan-500/10 rounded-lg border border-cyan-500/20">
-          <UploadCloud className="text-cyan-400" size={24} />
-        </div>
-        <div>
-          <h2 className="text-xl font-bold text-white">Auditar Nueva Configuración</h2>
-          <p className="text-slate-400 text-sm">Sube tu archivo .cfg de Cisco</p>
-        </div>
-      </div>
-
-      <div 
-        onDragEnter={handleDrag}
-        onDragLeave={handleDrag}
-        onDragOver={handleDrag}
-        onDrop={handleDrop}
-        className={`border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 relative overflow-hidden ${
-          dragActive ? "border-cyan-400 bg-cyan-400/5" : "border-slate-700 bg-slate-800/30"
-        } ${status === "uploading" ? "opacity-50 pointer-events-none" : ""}`}
-      >
-        <input 
-          type="file" 
-          id="fileUpload" 
-          className="hidden" 
-          accept=".cfg,.txt" 
-          onChange={(e) => e.target.files && validateAndSetFile(e.target.files[0])}
-        />
-        
-        {file ? (
-          <div className="flex flex-col items-center gap-2">
-            <div className="p-3 bg-slate-800 rounded-full mb-2">
-              <CheckCircle2 className="text-emerald-400" size={32} />
-            </div>
-            <p className="text-white font-medium">{file.name}</p>
-            <p className="text-slate-400 text-sm">{(file.size / 1024).toFixed(1)} KB</p>
-            <button 
-              onClick={() => {setFile(null); setStatus("idle");}}
-              className="text-cyan-400 text-sm hover:underline mt-2"
-              disabled={status === "uploading"}
-            >
-              Cambiar archivo
-            </button>
+    <div className="bg-[#0a0a0a] border border-neutral-800 rounded-xl shadow-2xl overflow-hidden font-sans">
+      <div className="p-8">
+        <div className="flex items-center gap-4 mb-8">
+          <div className="p-2.5 bg-[#111] border border-neutral-800 rounded-md">
+            <UploadCloud className="text-white w-5 h-5" strokeWidth={1.5} />
           </div>
-        ) : (
-          <label htmlFor="fileUpload" className="cursor-pointer flex flex-col items-center">
-            <UploadCloud className="text-slate-500 mb-4" size={48} />
-            <p className="text-slate-300 font-medium text-lg mb-1">Arrastra tu archivo aquí</p>
-            <p className="text-slate-500 text-sm mb-6">o haz clic para explorar (.cfg)</p>
-            <div className="bg-slate-800 text-slate-300 px-6 py-2 rounded-lg font-medium hover:bg-slate-700 transition-colors border border-slate-700">
-              Seleccionar Archivo
-            </div>
-          </label>
-        )}
+          <div>
+            <h2 className="text-xl font-medium text-white tracking-tight">Nueva Auditor?a</h2>
+            <p className="text-neutral-500 text-xs uppercase tracking-widest mt-1">Sube tu archivo .cfg de Cisco</p>
+          </div>
+        </div>
+
+        <motion.div 
+          layout
+          onDragEnter={handleDrag}
+          onDragLeave={handleDrag}
+          onDragOver={handleDrag}
+          onDrop={handleDrop}
+          animate={{ scale: dragActive ? 1.01 : 1 }}
+          transition={{ type: "spring", damping: 25, stiffness: 300 }}
+          className={\order border-dashed rounded-xl p-10 text-center transition-colors relative overflow-hidden \ \}
+        >
+          <input 
+            type="file" 
+            id="fileUpload" 
+            className="hidden" 
+            accept=".cfg,.txt" 
+            onChange={(e) => e.target.files && validateAndSetFile(e.target.files[0])}
+          />
+          
+          <AnimatePresence mode="wait">
+            {file ? (
+              <motion.div 
+                key="file"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="flex flex-col items-center gap-3 w-full"
+              >
+                <div className="p-3 bg-[#111] rounded-full border border-neutral-800 mb-2">
+                  <CheckCircle2 className="text-white w-6 h-6" strokeWidth={1.5} />
+                </div>
+                {/* TRUNCATE FIX FOR LONG NAMES */}
+                <p className="text-neutral-300 font-mono text-sm max-w-full truncate px-4">{file.name}</p>
+                <p className="text-neutral-500 text-xs uppercase tracking-widest">{(file.size / 1024).toFixed(1)} KB</p>
+                <button 
+                  onClick={() => {setFile(null); setStatus("idle");}}
+                  className="text-neutral-400 text-xs uppercase tracking-widest hover:text-white mt-4 border border-neutral-800 rounded-md px-3 py-1.5 hover:bg-[#222] transition-colors"
+                  disabled={status === "uploading"}
+                >
+                  Cambiar archivo
+                </button>
+              </motion.div>
+            ) : (
+              <motion.label 
+                key="placeholder"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                htmlFor="fileUpload" 
+                className="cursor-pointer flex flex-col items-center"
+              >
+                <UploadCloud className="text-neutral-600 mb-5 w-10 h-10" strokeWidth={1.5} />
+                <p className="text-neutral-300 font-medium text-sm mb-1">Arrastra tu archivo aqu?</p>
+                <p className="text-neutral-500 text-xs uppercase tracking-widest mb-8">o haz clic para explorar</p>
+                <div className="bg-white text-black px-6 py-2.5 rounded-md font-medium hover:bg-neutral-200 transition-colors text-sm">
+                  Seleccionar Archivo
+                </div>
+              </motion.label>
+            )}
+          </AnimatePresence>
+        </motion.div>
+
+        {/* Alerts */}
+        <AnimatePresence>
+          {status === "error" && (
+            <motion.div 
+              initial={{ opacity: 0, height: 0, marginTop: 0 }}
+              animate={{ opacity: 1, height: "auto", marginTop: 24 }}
+              exit={{ opacity: 0, height: 0, marginTop: 0 }}
+              className="overflow-hidden"
+            >
+              <div className="p-4 bg-red-950/20 border border-red-900/50 rounded-md flex items-center gap-3 text-red-400 text-sm">
+                <AlertCircle size={16} />
+                <span className="font-mono">{errorMessage}</span>
+              </div>
+            </motion.div>
+          )}
+
+          {status === "success" && (
+            <motion.div 
+              initial={{ opacity: 0, height: 0, marginTop: 0 }}
+              animate={{ opacity: 1, height: "auto", marginTop: 24 }}
+              exit={{ opacity: 0, height: 0, marginTop: 0 }}
+              className="overflow-hidden"
+            >
+              <div className="p-4 bg-[#111] border border-neutral-800 rounded-md flex items-center gap-3 text-white text-sm">
+                <CheckCircle2 size={16} />
+                <span className="font-mono">Auditor?a completada y guardada exitosamente.</span>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
-      {/* Alerts */}
-      {status === "error" && (
-        <div className="mt-4 p-3 bg-rose-500/10 border border-rose-500/20 rounded-lg flex items-center gap-3 text-rose-400 text-sm animate-in fade-in slide-in-from-bottom-2">
-          <AlertCircle size={18} />
-          <span>{errorMessage}</span>
-        </div>
-      )}
-
-      {status === "success" && (
-        <div className="mt-4 p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-lg flex items-center gap-3 text-emerald-400 text-sm animate-in fade-in slide-in-from-bottom-2">
-          <CheckCircle2 size={18} />
-          <span>Auditoría completada exitosamente.</span>
-        </div>
-      )}
-
-      <button 
-        className={`w-full mt-6 py-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all duration-300 shadow-lg ${
-          !file || status === "success" || status === "uploading" 
-            ? "bg-slate-800 text-slate-500 border border-slate-700 cursor-not-allowed" 
-            : "bg-cyan-600 hover:bg-cyan-500 text-white shadow-cyan-900/50 hover:shadow-cyan-500/25 border border-cyan-500"
-        }`}
-        disabled={!file || status === "uploading" || status === "success"}
-        onClick={handleUpload}
-      >
-        {status === "uploading" ? (
-          <>
-            <Loader2 className="animate-spin" size={20} />
-            Analizando en la nube...
-          </>
-        ) : status === "success" ? (
-          <>
-            <CheckCircle2 size={20} />
-            Reporte Generado
-          </>
-        ) : (
-          "Iniciar Auditoría"
-        )}
-      </button>
+      <div className="p-6 bg-[#050505] border-t border-neutral-800">
+        <button 
+          className={\w-full py-3.5 rounded-md font-medium flex items-center justify-center gap-3 transition-colors text-sm \}
+          disabled={!file || status === "uploading" || status === "success"}
+          onClick={handleUpload}
+        >
+          {status === "uploading" ? (
+            <>
+              <Loader2 className="animate-spin w-4 h-4" />
+              <span className="uppercase tracking-widest">Procesando...</span>
+            </>
+          ) : status === "success" ? (
+            <>
+              <CheckCircle2 className="w-4 h-4" />
+              <span className="uppercase tracking-widest">Generado</span>
+            </>
+          ) : (
+            <span className="uppercase tracking-widest">Iniciar An?lisis</span>
+          )}
+        </button>
+      </div>
     </div>
   );
 }
