@@ -1,67 +1,76 @@
 import UploadConfig from "@/components/UploadConfig";
 import ReportTable from "@/components/ReportTable";
-import { Shield, User } from "lucide-react";
+import { Shield, User, LogOut, Server } from "lucide-react";
 import { createClient } from "@/utils/supabase/server";
-
 import TermsUpdater from "@/components/TermsUpdater";
 
 export default async function Home() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  const userName = user?.user_metadata?.full_name || user?.email || 'Usuario';
+  const userName = user?.user_metadata?.full_name || user?.email || 'Administrador';
 
   return (
-    <div className="min-h-screen bg-[#0B1120] text-slate-200 selection:bg-cyan-500/30 p-4 sm:p-8 md:p-12 font-sans">
+    <div className="min-h-screen bg-[#000000] text-neutral-300 p-4 sm:p-8 md:p-12 font-sans selection:bg-white selection:text-black">
       <TermsUpdater currentVersion={user?.user_metadata?.terms_version || 0} />
-      <div className="max-w-7xl mx-auto space-y-12 relative z-10">
+      
+      <div className="max-w-[1400px] mx-auto space-y-12">
         
-        {/* Header */}
-        <header className="flex items-center justify-between border-b border-slate-800 pb-6">
-          <div className="flex items-center gap-4">
-            <div className="p-3 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl shadow-lg shadow-cyan-500/20">
-              <Shield className="w-8 h-8 text-white" />
+        {/* Minimalist Header */}
+        <header className="flex items-center justify-between border-b border-neutral-800 pb-8">
+          <div className="flex items-center gap-5">
+            <div className="p-3 bg-[#0a0a0a] border border-neutral-800 rounded-lg">
+              <Shield className="w-6 h-6 text-white" strokeWidth={1.5} />
             </div>
             <div>
-              <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400 tracking-tight">
+              <h1 className="text-2xl font-medium text-white tracking-tight">
                 NetShield Core
               </h1>
-              <p className="text-slate-400 text-sm mt-1">Network Security Auditing Dashboard</p>
+              <p className="text-neutral-500 text-xs uppercase tracking-widest mt-1">Network Security Auditing</p>
             </div>
           </div>
           
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 px-4 py-2 bg-slate-800/50 rounded-lg border border-slate-700/50">
-              <User className="w-4 h-4 text-cyan-400" />
-              <span className="text-sm font-medium text-slate-300">{userName}</span>
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-[#111] border border-neutral-800 rounded-full flex items-center justify-center">
+                <User className="w-4 h-4 text-neutral-400" />
+              </div>
+              <span className="text-sm font-medium text-neutral-300 hidden sm:block">{userName}</span>
             </div>
+            <div className="w-px h-8 bg-neutral-800 hidden sm:block"></div>
             <form action="/auth/signout" method="post">
-              <button className="text-sm font-medium text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 px-4 py-2 rounded-lg transition-colors">
-                Cerrar Sesión
+              <button className="text-xs uppercase tracking-widest font-medium text-neutral-500 hover:text-white transition-colors flex items-center gap-2">
+                <LogOut className="w-4 h-4" />
+                <span className="hidden sm:block">Cerrar Sesi?n</span>
               </button>
             </form>
           </div>
         </header>
 
-        {/* Main Content */}
-        <main className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Main Content Grid */}
+        <main className="grid grid-cols-1 xl:grid-cols-12 gap-8">
           
-          {/* Left Column (Upload) */}
-          <div className="lg:col-span-1 space-y-8">
+          {/* Left Column (Upload & System Status) */}
+          <div className="xl:col-span-4 space-y-8">
             <UploadConfig />
             
-            <div className="bg-slate-900/50 backdrop-blur-md p-6 rounded-2xl border border-slate-700/50 shadow-xl">
-              <h3 className="text-lg font-semibold text-white mb-2">Estado del Sistema</h3>
-              <div className="space-y-3 mt-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-slate-400">Backend API</span>
-                  <span className="flex items-center gap-2 text-sm text-emerald-400">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Online
+            {/* Minimalist System Status */}
+            <div className="bg-[#0a0a0a] border border-neutral-800 rounded-xl p-8">
+              <div className="flex items-center gap-3 mb-6">
+                <Server className="w-4 h-4 text-neutral-500" />
+                <h3 className="text-sm font-medium text-white uppercase tracking-widest">Estado del Sistema</h3>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="flex justify-between items-center border-b border-neutral-800/50 pb-4">
+                  <span className="text-neutral-400 text-sm">Motor de Auditor?a</span>
+                  <span className="flex items-center gap-2 text-xs font-mono text-white">
+                    <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span> ONLINE
                   </span>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-slate-400">Base de Datos</span>
-                  <span className="flex items-center gap-2 text-sm text-emerald-400">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Conectado
+                <div className="flex justify-between items-center pt-2">
+                  <span className="text-neutral-400 text-sm">Base de Datos</span>
+                  <span className="flex items-center gap-2 text-xs font-mono text-white">
+                    <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span> SYNCED
                   </span>
                 </div>
               </div>
@@ -69,17 +78,11 @@ export default async function Home() {
           </div>
 
           {/* Right Column (Table) */}
-          <div className="lg:col-span-2">
+          <div className="xl:col-span-8">
             <ReportTable />
           </div>
 
         </main>
-      </div>
-
-      {/* Decorative Background Gradients */}
-      <div className="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-cyan-900/20 blur-[120px]"></div>
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-blue-900/20 blur-[120px]"></div>
       </div>
     </div>
   );

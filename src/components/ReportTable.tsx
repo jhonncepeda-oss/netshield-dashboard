@@ -76,6 +76,12 @@ export default function ReportTable() {
 
   useEffect(() => {
     fetchReports();
+    
+    // Listen for new uploads from UploadConfig
+    const handleUpload = () => fetchReports();
+    window.addEventListener("reportUploaded", handleUpload);
+    
+    return () => window.removeEventListener("reportUploaded", handleUpload);
   }, [fetchReports]);
 
   const openDrawer = async (report: any) => {

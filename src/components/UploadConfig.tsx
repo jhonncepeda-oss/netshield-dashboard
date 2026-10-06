@@ -72,6 +72,9 @@ export default function UploadConfig() {
       }
 
       setStatus("success");
+      // Trigger a refresh in ReportTable
+      window.dispatchEvent(new Event("reportUploaded"));
+      
       setTimeout(() => {
         setFile(null);
         setStatus("idle");
