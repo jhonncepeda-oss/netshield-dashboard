@@ -42,7 +42,7 @@ export default function TermsPage() {
 
           <section>
             <h2 className="text-xl font-semibold text-white mb-2">5. Disponibilidad del Servicio (SLA)</h2>
-            <p>El servicio se proporciona "Tal cual" (As-Is). Debido a nuestra arquitectura de servidores en la nube, la plataforma puede presentar tiempos de carga iniciales extendidos (cold-starts) o mantenimientos no programados. No ofrecemos garantías de disponibilidad ininterrumpida (uptime) ni otorgamos derecho a compensaciones por interrupciones del servicio.</p>
+            <p>El servicio se proporciona &quot;Tal cual&quot; (As-Is). Debido a nuestra arquitectura de servidores en la nube, la plataforma puede presentar tiempos de carga iniciales extendidos (cold-starts) o mantenimientos no programados. No ofrecemos garantías de disponibilidad ininterrumpida (uptime) ni otorgamos derecho a compensaciones por interrupciones del servicio.</p>
           </section>
 
           <section>

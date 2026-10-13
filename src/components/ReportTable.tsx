@@ -383,7 +383,7 @@ export default function ReportTable() {
               <div className="p-8 border-t border-white/10 bg-black/20 backdrop-blur-xl">
                  <button 
                    onClick={() => {
-                     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+                     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://netshield-core.onrender.com";
                      window.open(`${apiUrl}/export/${selectedReport.report_id}/pdf`, "_blank");
                    }}
                    className="w-full bg-white hover:bg-neutral-200 text-black font-medium text-sm py-4 rounded-xl transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)] hover:shadow-[0_0_30px_rgba(255,255,255,0.4)] flex items-center justify-center gap-2"

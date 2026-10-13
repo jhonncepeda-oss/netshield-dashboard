@@ -47,7 +47,7 @@ export default function TermsUpdater({ currentVersion }: { currentVersion: numbe
               <ul className="space-y-3 list-disc list-inside text-white/60">
                 <li>Se prohíbe el abuso de la API y bots.</li>
                 <li>Se incluye cláusula de indemnidad legal.</li>
-                <li>SLA: El servicio se provee "Tal Cual".</li>
+                <li>SLA: El servicio se provee &quot;Tal Cual&quot;.</li>
                 <li>Limitación de responsabilidad por falsos positivos.</li>
               </ul>
             </div>
@@ -64,7 +64,7 @@ export default function TermsUpdater({ currentVersion }: { currentVersion: numbe
           </div>
           
           <p className="text-xs text-white/40 text-center mt-6 px-4">
-            Al hacer clic en "Acepto los nuevos términos", confirmas que has leído y estás de acuerdo con la totalidad de nuestros Términos de Servicio y Política de Privacidad actualizados.
+            Al hacer clic en &quot;Acepto los nuevos trminos&quot;, confirmas que has leído y estás de acuerdo con la totalidad de nuestros Términos de Servicio y Política de Privacidad actualizados.
           </p>
         </div>
         
@@ -77,7 +77,7 @@ export default function TermsUpdater({ currentVersion }: { currentVersion: numbe
             {loading ? (
               <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-black"></div>
             ) : (
-              "Acepto los nuevos términos y condiciones"
+              "Acepto los nuevos t\u00E9rminos"
             )}
           </button>
         </div>

@@ -56,7 +56,7 @@ export default function UploadConfig({ userId }: { userId?: string }) {
       formData.append("ip_address", mockIp);
       formData.append("os_version", "IOS15");
       
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://netshield-core.onrender.com";
       
       const res = await fetch(`${apiUrl}/audit/run`, {
         method: "POST",
